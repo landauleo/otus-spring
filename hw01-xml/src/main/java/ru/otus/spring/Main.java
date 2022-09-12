@@ -1,7 +1,6 @@
 package ru.otus.spring;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import ru.otus.spring.domain.Question;
 import ru.otus.spring.service.Reader;
 
 public class Main {

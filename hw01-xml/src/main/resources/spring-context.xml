@@ -4,11 +4,8 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="personDao" class="ru.otus.spring.dao.PersonDaoSimple">
-    </bean>
-
-    <bean id="personService" class="ru.otus.spring.service.ReaderImpl">
-        <constructor-arg name="dao" ref="personDao"/>
+    <bean id="personService" class="ru.otus.spring.service.CsvReaderImpl">
+        <property name="fileName" value="questionnaire.csv" />
     </bean>
 
 </beans>

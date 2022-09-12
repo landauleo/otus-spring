@@ -22,5 +22,10 @@
             <artifactId>spring-context</artifactId>
             <version>5.3.22</version>
         </dependency>
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>5.7.0</version>
+        </dependency>
     </dependencies>
 </project>
