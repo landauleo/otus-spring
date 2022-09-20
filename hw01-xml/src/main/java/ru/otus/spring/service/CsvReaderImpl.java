@@ -5,6 +5,8 @@ import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvValidationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.otus.spring.domain.Option;
 import ru.otus.spring.domain.Question;
 import ru.otus.spring.domain.QuestionText;
@@ -18,7 +20,7 @@ import java.util.List;
 public class CsvReaderImpl implements Reader {
 
     private String fileName;
-
+    private static final Logger log = LoggerFactory.getLogger(CsvReaderImpl.class);
     private static final int QUESTION_TEXT_CELL_INDEX = 0;
     private static final int ANSWER_CELL_INDEX = 5;
 
@@ -28,6 +30,8 @@ public class CsvReaderImpl implements Reader {
 
     @Override
     public List<Question> read() {
+        log.info("Is about read CSV-file");
+
         if (fileName == null || fileName.trim().equals("")) {
             throw new IllegalArgumentException("Filename can't be blank");
         }
@@ -51,8 +55,10 @@ public class CsvReaderImpl implements Reader {
                 questions.add(question);
             }
         } catch (IOException | CsvValidationException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
+
+        log.info("Questions list: " + questions);
         return questions;
     }
 
