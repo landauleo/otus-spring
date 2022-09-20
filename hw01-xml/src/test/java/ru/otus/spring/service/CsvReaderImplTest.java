@@ -1,9 +1,7 @@
 package ru.otus.spring.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.ImportResource;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.otus.spring.domain.Question;
 
 import java.util.List;
@@ -15,15 +13,13 @@ class CsvReaderImplTest {
 
     private static CsvReaderImpl service;
 
-    @BeforeEach
-    void init() {
-        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("/test-spring-context.xml");
-        service = context.getBean(CsvReaderImpl.class);
-    }
-
     @Test
     void readSuccessfullyTest() {
+        service = new CsvReaderImpl();
+        service.setFileName("questionnaire.csv");
+
         List<Question> questions = service.read();
+
         assertNotNull(questions);
         assertDoesNotThrow(() -> service.read());
         assertEquals(questions.size(), 5);
