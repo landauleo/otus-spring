@@ -14,6 +14,18 @@ public class Question {
         this.answer = answer;
     }
 
+    public QuestionText getText() {
+        return text;
+    }
+
+    public List<Option> getOptions() {
+        return options;
+    }
+
+    public Option getAnswer() {
+        return answer;
+    }
+
     @Override
     public String toString() {
         return "Question{" +

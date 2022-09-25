@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class CsvReaderImpl implements Reader {
 
@@ -30,7 +31,7 @@ public class CsvReaderImpl implements Reader {
     }
 
     @Override
-    public void read() {
+    public List<Question> read() {
         log.info("Is about read CSV-file");
 
         if (fileName == null || fileName.trim().equals("")) {
@@ -60,6 +61,7 @@ public class CsvReaderImpl implements Reader {
         }
 
         log.info("Questions list: " + questions);
+        return questions;
     }
 
     private QuestionText getQuestionText(String[] cellsContent) {
@@ -80,7 +82,7 @@ public class CsvReaderImpl implements Reader {
 
     private Option getAnswer(String[] cellsContent) {
         if (cellsContent.length > ANSWER_CELL_INDEX) {
-            return new Option(cellsContent[ANSWER_CELL_INDEX]);
+            return new Option(cellsContent[ANSWER_CELL_INDEX].toLowerCase(Locale.ROOT));
         }
         return null;
     }
