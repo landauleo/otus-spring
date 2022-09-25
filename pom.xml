@@ -10,7 +10,7 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>hw01-xml</module>
+        <module>hw01-xml-based-config</module>
     </modules>
 
 </project>
