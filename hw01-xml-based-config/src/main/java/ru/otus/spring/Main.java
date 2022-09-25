@@ -4,7 +4,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.otus.spring.service.Reader;
 
 /**
- * java -jar hw01-xml-jar-with-dependencies.jar
+ * java -jar hw01-xml-based-config-jar-with-dependencies.jar
  */
 public class Main {
 
