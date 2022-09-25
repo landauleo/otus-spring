@@ -11,6 +11,7 @@
 
     <modules>
         <module>hw01-xml-based-config</module>
+        <module>hw02-java-annotation-based-config</module>
     </modules>
 
 </project>
