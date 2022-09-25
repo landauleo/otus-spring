@@ -1,16 +1,7 @@
 package ru.otus.spring.service;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.ResourceLock;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
-import org.springframework.context.annotation.PropertySource;
-import ru.otus.spring.Main;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -24,7 +15,7 @@ class QuestionnaireServiceTest {
     private QuestionnaireService service;
 
     @Test
-    void testInnerMethodExecution() {
+    void testInnerMethodsExecution() {
         Reader reader = mock(Reader.class);
         Validator validator = mock(Validator.class);
         service = new QuestionnaireServiceImpl(reader, validator);
@@ -36,7 +27,7 @@ class QuestionnaireServiceTest {
     }
 
     @Test
-    void testConsoleOutput() {
+    void testConsoleOutputIntro() {
         Reader reader = mock(Reader.class);
         Validator validator = mock(Validator.class);
         service = new QuestionnaireServiceImpl(reader, validator);
@@ -51,7 +42,7 @@ class QuestionnaireServiceTest {
     }
 
     @Test
-    void testThrowsWithoutAppConfig() {
+    void testRunFailsWithoutAppConfig() {
         Reader reader = new CsvReaderImpl();
         Validator validator = mock(Validator.class);
         service = new QuestionnaireServiceImpl(reader, validator);
