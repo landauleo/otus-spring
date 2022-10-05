@@ -8,7 +8,6 @@ import ru.otus.spring.service.CsvReaderImpl;
 import ru.otus.spring.service.Reader;
 
 @Configuration
-@PropertySource("classpath:application.properties") //с application.yml такой фоокус не сработал
 public class AppConfig {
 
     @Value("${questionnaire.path}")
