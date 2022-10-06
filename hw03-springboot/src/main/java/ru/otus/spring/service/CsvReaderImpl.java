@@ -7,6 +7,8 @@ import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import ru.otus.spring.config.AppProps;
 import ru.otus.spring.domain.Option;
 import ru.otus.spring.domain.Question;
 import ru.otus.spring.domain.QuestionText;
@@ -17,16 +19,24 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import javax.annotation.PostConstruct;
 
+@Service
 public class CsvReaderImpl implements Reader {
 
+    private final AppProps appProps;
     private String fileName;
     private static final Logger log = LoggerFactory.getLogger(CsvReaderImpl.class);
     private static final int QUESTION_TEXT_CELL_INDEX = 0;
     private static final int ANSWER_CELL_INDEX = 5;
 
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
+    public CsvReaderImpl(AppProps appProps) {
+        this.appProps = appProps;
+    }
+
+    @PostConstruct
+    public void initFilename() {
+        fileName = appProps.getLocale() == Locale.ENGLISH ? appProps.getPath().getEnPath() : appProps.getPath().getRuPath();
     }
 
     @Override
@@ -71,7 +81,7 @@ public class CsvReaderImpl implements Reader {
         List<Option> options = new ArrayList<>();
 
         if (cellsContent.length > 1) {
-            for (int i = 1; i < cellsContent.length; i++) {
+            for (int i = 1; i < cellsContent.length - 1; i++) {
                 options.add(new Option(cellsContent[i]));
             }
         }

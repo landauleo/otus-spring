@@ -1,4 +1,4 @@
-package ru.otus.spring;
+package ru.otus.spring.service;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import ru.otus.spring.service.QuestionnaireService;
 
 /*
-* Теперь, кстати, при создании нового модуля в IDE можно выбирать сразу опцию : New -> Module... -> Spring Boot Initializr
+ * Теперь, кстати, при создании нового модуля в IDE можно выбирать сразу опцию : New -> Module... -> Spring Boot Initializr
  */
 @Component
 public class Hw03CommandLineRunner implements CommandLineRunner {
@@ -17,12 +17,8 @@ public class Hw03CommandLineRunner implements CommandLineRunner {
         this.questionnaireService = questionnaireService;
     }
 
-    public static void main(String[] args) {
-        SpringApplication.run(Hw03CommandLineRunner.class, args);
-    }
-
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         questionnaireService.run();
     }
 
