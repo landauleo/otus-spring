@@ -9,11 +9,11 @@ import ru.otus.spring.service.QuestionnaireService;
  * Теперь, кстати, при создании нового модуля в IDE можно выбирать сразу опцию : New -> Module... -> Spring Boot Initializr
  */
 @Component
-public class Hw03CommandLineRunner implements CommandLineRunner {
+public class MainCommandLineRunner implements CommandLineRunner {
 
     private final QuestionnaireService questionnaireService;
 
-    public Hw03CommandLineRunner(QuestionnaireService questionnaireService) {
+    public MainCommandLineRunner(QuestionnaireService questionnaireService) {
         this.questionnaireService = questionnaireService;
     }
 
