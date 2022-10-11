@@ -15,25 +15,24 @@ import com.opencsv.exceptions.CsvValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import ru.otus.spring.config.AppProps;
 import ru.otus.spring.domain.Option;
 import ru.otus.spring.domain.Question;
 
 @Service
 public class CsvReaderImpl implements Reader {
 
-    private final AppProps appProps;
+    private final ResourceService resourceService;
     private static final Logger log = LoggerFactory.getLogger(CsvReaderImpl.class);
     private static final int QUESTION_TEXT_CELL_INDEX = 0;
     private static final int ANSWER_CELL_INDEX = 5;
 
-    public CsvReaderImpl(AppProps appProps) {
-        this.appProps = appProps;
+    public CsvReaderImpl(ResourceService resourceService) {
+        this.resourceService = resourceService;
     }
 
     @Override
     public List<Question> read() {
-        String fileName = getFileName();
+        String fileName = resourceService.getFilename();
         log.info("Is about read CSV-file");
 
         if (fileName.trim().equals("")) {
@@ -90,10 +89,6 @@ public class CsvReaderImpl implements Reader {
             return cellsContent[ANSWER_CELL_INDEX].toLowerCase(Locale.ROOT);
         }
         return null;
-    }
-
-    private String getFileName() {
-        return appProps.getLocale().toString() + "_" + appProps.getPath().getBasename();
     }
 
 }
