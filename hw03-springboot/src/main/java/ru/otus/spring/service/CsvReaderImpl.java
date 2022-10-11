@@ -59,6 +59,7 @@ public class CsvReaderImpl implements Reader {
                 Question question = new Question(questionText, options, answer);
                 questions.add(question);
             }
+            reader.close();
         } catch (IOException | CsvValidationException e) {
             log.error(e.getMessage());
         }
