@@ -10,10 +10,10 @@ import ru.otus.spring.config.AppProps;
  */
 @SpringBootApplication
 @EnableConfigurationProperties(AppProps.class)
-public class Hw03SpringbootApplication {
+public class Main {
 
     public static void main(String[] args) {
-        SpringApplication.run(Hw03SpringbootApplication.class, args);
+        SpringApplication.run(Main.class, args);
     }
 
 }
