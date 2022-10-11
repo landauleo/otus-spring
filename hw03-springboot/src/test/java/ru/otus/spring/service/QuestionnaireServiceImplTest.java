@@ -32,16 +32,4 @@ class QuestionnaireServiceImplTest {
         Assertions.assertEquals("RU", appProps.getLocale().getCountry());
     }
 
-    @Test
-    void testGreetingText() {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        PrintStream ps = new PrintStream(baos);
-        System.setOut(ps);
-
-        service.run();
-
-        Assertions.assertTrue(baos.toString().contains("-<<=== Приветики! Не против ответить на 5 вопросов (◕‿◕)? ===>>-"));
-        Assertions.assertTrue(baos.toString().contains("Отвечай вдумчиво, печатая свои варианты в консоль!"));
-    }
-
 }

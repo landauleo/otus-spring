@@ -9,15 +9,17 @@ public class MessageSourceServiceImpl implements MessageSourceService{
 
     private final MessageSource messageSource;
     private final AppProps appProps;
+    private final IOService ioService;
 
     public MessageSourceServiceImpl(MessageSource messageSource, AppProps appProps) {
         this.messageSource = messageSource;
         this.appProps = appProps;
+        this.ioService = new IOServiceStreams(System.out, System.in);;
     }
 
     @Override
     public void getAndPrintMessage(String code, String[] args) {
-        System.out.println(messageSource.getMessage(code, args, appProps.getLocale()));
+        ioService.outputString(messageSource.getMessage(code, args, appProps.getLocale()));
     }
 
 }

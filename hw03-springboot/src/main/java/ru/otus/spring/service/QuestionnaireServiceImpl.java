@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-import java.util.Scanner;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -17,12 +16,14 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
     private final Reader reader;
     private final Validator validator;
     private final MessageSourceService messageSource;
+    private final IOService ioService;
 
     //тут должен сработать автовайринг по дефолту, так как всего лишь 1 конструктор
     public QuestionnaireServiceImpl(Reader reader, Validator validator, MessageSourceService messageSource) {
         this.reader = reader;
         this.validator = validator;
         this.messageSource = messageSource;
+        this.ioService = new IOServiceStreams(System.out, System.in);;
     }
 
     @Override
@@ -30,18 +31,16 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
         messageSource.getAndPrintMessage("greeting.user", new String[]{"(◕‿◕)"});
         messageSource.getAndPrintMessage("greeting.warning", null);
 
-        Scanner scanner = new Scanner(System.in);
-
         List<Question> questions = reader.read();
         List<String> userAnswers = new ArrayList<>();
         List<String> rightAnswers = getRightAnswers(questions);
 
         for (Question question : questions) {
-            System.out.println(question.getText());
+            ioService.outputString(question.getText());
             for (Option option : question.getOptions()) {
-                System.out.println(option.getText());
+                ioService.outputString(option.getText());
             }
-            userAnswers.add(scanner.nextLine().trim().toLowerCase(Locale.ROOT));
+            userAnswers.add(ioService.readString().trim().toLowerCase(Locale.ROOT));
         }
 
         validator.validate(rightAnswers, userAnswers);
