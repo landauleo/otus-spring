@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class CsvReaderImplTest {
 
     @Autowired
-    AppProps appProps;
+    private AppProps appProps;
 
     @Autowired
     private QuestionnaireService service;
