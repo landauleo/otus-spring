@@ -20,7 +20,7 @@ class ValidatorImplTest {
     private Validator validator;
 
     @Autowired
-    Reader reader;
+    private Reader reader;
 
     @MockBean
     private MainCommandLineRunner commandLineRunner;
