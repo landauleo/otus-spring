@@ -7,8 +7,7 @@ spring:
 
 questionnaire:
   path:
-    enPath: questionnaire_en.csv
-    ruPath: questionnaire_ru_RU.csv # очень странная штука, но с именем ru_questionnaire.csv inputStream был пустой
+    basename: questionnaire.csv # очень странная штука, но с именем ru_questionnaire.csv inputStream был пустой
   locale: ru_RU
 
 

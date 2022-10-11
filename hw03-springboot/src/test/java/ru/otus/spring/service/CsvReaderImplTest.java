@@ -28,7 +28,7 @@ class CsvReaderImplTest {
     private Reader reader;
 
     @MockBean
-    private Hw03CommandLineRunner commandLineRunner;
+    private MainCommandLineRunner commandLineRunner;
 
     @Test
     void testReadQuestionsNumber() {

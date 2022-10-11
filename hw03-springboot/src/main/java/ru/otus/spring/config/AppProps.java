@@ -33,24 +33,14 @@ public class AppProps {
 
     public static class Path {
 
-        private String enPath;
+        private String basename;
 
-        private String ruPath;
-
-        public void setEnPath(String enPath) {
-            this.enPath = enPath;
+        public String getBasename() {
+            return basename;
         }
 
-        public void setRuPath(String ruPath) {
-            this.ruPath = ruPath;
-        }
-
-        public String getEnPath() {
-            return enPath;
-        }
-
-        public String getRuPath() {
-            return ruPath;
+        public void setBasename(String basename) {
+            this.basename = basename;
         }
 
     }

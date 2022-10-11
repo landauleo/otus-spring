@@ -1,5 +1,12 @@
 package ru.otus.spring.service;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 import com.opencsv.CSVParser;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
@@ -13,19 +20,10 @@ import ru.otus.spring.domain.Option;
 import ru.otus.spring.domain.Question;
 import ru.otus.spring.domain.QuestionText;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import javax.annotation.PostConstruct;
-
 @Service
 public class CsvReaderImpl implements Reader {
 
     private final AppProps appProps;
-    private String fileName;
     private static final Logger log = LoggerFactory.getLogger(CsvReaderImpl.class);
     private static final int QUESTION_TEXT_CELL_INDEX = 0;
     private static final int ANSWER_CELL_INDEX = 5;
@@ -34,16 +32,12 @@ public class CsvReaderImpl implements Reader {
         this.appProps = appProps;
     }
 
-    @PostConstruct
-    public void initFilename() {
-        fileName = appProps.getLocale() == Locale.ENGLISH ? appProps.getPath().getEnPath() : appProps.getPath().getRuPath();
-    }
-
     @Override
     public List<Question> read() {
+        String fileName = getFileName();
         log.info("Is about read CSV-file");
 
-        if (fileName == null || fileName.trim().equals("")) {
+        if (fileName.trim().equals("")) {
             throw new IllegalArgumentException("Filename can't be blank");
         }
 
@@ -94,6 +88,10 @@ public class CsvReaderImpl implements Reader {
             return new Option(cellsContent[ANSWER_CELL_INDEX].toLowerCase(Locale.ROOT));
         }
         return null;
+    }
+
+    private String getFileName() {
+        return appProps.getLocale().toString() + "_" + appProps.getPath().getBasename();
     }
 
 }

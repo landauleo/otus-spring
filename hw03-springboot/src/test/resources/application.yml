@@ -4,8 +4,7 @@ spring:
 
 questionnaire:
   path:
-    enPath: questionnaire_en.csv
-    ruPath: questionnaire_ru_RU.csv
+    basename: questionnaire.csv
   locale: ru_RU
 
 
