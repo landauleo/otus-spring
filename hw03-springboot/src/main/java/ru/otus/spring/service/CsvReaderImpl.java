@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import ru.otus.spring.config.AppProps;
 import ru.otus.spring.domain.Option;
 import ru.otus.spring.domain.Question;
-import ru.otus.spring.domain.QuestionText;
 
 @Service
 public class CsvReaderImpl implements Reader {
@@ -53,10 +52,9 @@ public class CsvReaderImpl implements Reader {
             CSVReader reader = new CSVReaderBuilder(new InputStreamReader(inputStream)).withCSVParser(parser).build();
             String[] nextLine;
             while ((nextLine = reader.readNext()) != null) {
-                QuestionText questionText = getQuestionText(nextLine);
+                String questionText = getQuestionText(nextLine);
                 List<Option> options = getOptions(nextLine);
-                Option answer = getAnswer(nextLine);
-                Question question = new Question(questionText, options, answer);
+                Question question = new Question(questionText, options);
                 questions.add(question);
             }
             reader.close();
@@ -68,25 +66,28 @@ public class CsvReaderImpl implements Reader {
         return questions;
     }
 
-    private QuestionText getQuestionText(String[] cellsContent) {
-        return cellsContent.length >= 1 ? new QuestionText(cellsContent[QUESTION_TEXT_CELL_INDEX]) : null;
+    private String getQuestionText(String[] cellsContent) {
+        return cellsContent.length >= 1 ? cellsContent[QUESTION_TEXT_CELL_INDEX] : null;
     }
 
     private List<Option> getOptions(String[] cellsContent) {
         List<Option> options = new ArrayList<>();
+        String answer;
 
         if (cellsContent.length > 1) {
             for (int i = 1; i < cellsContent.length - 1; i++) {
-                options.add(new Option(cellsContent[i]));
+                 answer = getAnswer(cellsContent);
+                String text = cellsContent[i];
+                options.add(new Option(text.toLowerCase(Locale.ROOT), text.equalsIgnoreCase(answer)));
             }
         }
 
         return options;
     }
 
-    private Option getAnswer(String[] cellsContent) {
+    private String getAnswer(String[] cellsContent) {
         if (cellsContent.length > ANSWER_CELL_INDEX) {
-            return new Option(cellsContent[ANSWER_CELL_INDEX].toLowerCase(Locale.ROOT));
+            return cellsContent[ANSWER_CELL_INDEX].toLowerCase(Locale.ROOT);
         }
         return null;
     }

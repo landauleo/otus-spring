@@ -1,6 +1,7 @@
 package ru.otus.spring.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
@@ -32,21 +33,21 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
         Scanner scanner = new Scanner(System.in);
 
         List<Question> questions = reader.read();
-        List<Option> userAnswers = new ArrayList<>();
-        List<Option> rightAnswers = getRightAnswers(questions);
+        List<String> userAnswers = new ArrayList<>();
+        List<String> rightAnswers = getRightAnswers(questions);
 
         for (Question question : questions) {
-            System.out.println(question.getText().text());
+            System.out.println(question.getText());
             for (Option option : question.getOptions()) {
-                System.out.println(option.text());
+                System.out.println(option.getText());
             }
-            userAnswers.add(new Option(scanner.nextLine().trim().toLowerCase(Locale.ROOT)));
+            userAnswers.add(scanner.nextLine().trim().toLowerCase(Locale.ROOT));
         }
 
         validator.validate(rightAnswers, userAnswers);
     }
 
-    private List<Option> getRightAnswers(List<Question> questions) {
-        return questions.stream().map(Question::getAnswer).collect(Collectors.toList());
+    private List<String> getRightAnswers(List<Question> questions) {
+        return questions.stream().map(Question::getOptions).flatMap(Collection::stream).filter(Option::isRight).map(Option::getText).collect(Collectors.toList());
     }
 }

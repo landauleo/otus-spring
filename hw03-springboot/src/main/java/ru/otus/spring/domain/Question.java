@@ -1,20 +1,19 @@
 package ru.otus.spring.domain;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Question {
 
-    private final QuestionText text;
+    private final String text;
     private final List<Option> options;
-    private final Option answer;
 
-    public Question(QuestionText text, List<Option> options, Option answer) {
+    public Question(String text, List<Option> options) {
         this.text = text;
         this.options = options;
-        this.answer = answer;
     }
 
-    public QuestionText getText() {
+    public String getText() {
         return text;
     }
 
@@ -22,16 +21,24 @@ public class Question {
         return options;
     }
 
-    public Option getAnswer() {
-        return answer;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Question)) return false;
+        Question question = (Question) o;
+        return Objects.equals(text, question.text) && Objects.equals(options, question.options);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(text, options);
     }
 
     @Override
     public String toString() {
         return "Question{" +
-                "text=" + text +
+                "text='" + text + '\'' +
                 ", options=" + options +
-                ", answer=" + answer +
                 '}';
     }
 

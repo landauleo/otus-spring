@@ -2,6 +2,7 @@ package ru.otus.spring.service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,8 +32,8 @@ class ValidatorImplTest {
         PrintStream ps = new PrintStream(baos);
         System.setOut(ps);
 
-        List<Option> rightAnswers = reader.read().stream().map(Question::getAnswer).collect(Collectors.toList());
-        List<Option> wrongAnswers = List.of(new Option("blah-blah"), new Option("blah-blah"), new Option("blah-blah"), new Option("blah-blah"));
+        List<String> rightAnswers = reader.read().stream().map(Question::getOptions).flatMap(Collection::stream).filter(Option::isRight).map(Option::getText).collect(Collectors.toList());
+        List<String> wrongAnswers = List.of("blah-blah", "blah-blah", "blah-blah", "blah-blah");
 
         validator.validate(rightAnswers, wrongAnswers);
 
@@ -45,8 +46,8 @@ class ValidatorImplTest {
         PrintStream ps = new PrintStream(baos);
         System.setOut(ps);
 
-        List<Option> rightAnswers = reader.read().stream().map(Question::getAnswer).collect(Collectors.toList());
-        List<Option> actualAnswers = List.of(new Option("1976"), new Option("5"), new Option("польша"), new Option("зелёный"), new Option("фиона"));
+        List<String> rightAnswers = reader.read().stream().map(Question::getOptions).flatMap(Collection::stream).filter(Option::isRight).map(Option::getText).collect(Collectors.toList());
+        List<String> actualAnswers = List.of("1976", "5", "польша", "зелёный", "фиона");
 
         validator.validate(rightAnswers, actualAnswers);
 
@@ -59,8 +60,8 @@ class ValidatorImplTest {
         PrintStream ps = new PrintStream(baos);
         System.setOut(ps);
 
-        List<Option> rightAnswers = reader.read().stream().map(Question::getAnswer).collect(Collectors.toList());
-        List<Option> actualAnswers = List.of(new Option("1976"), new Option("5"), new Option("poland"), new Option("green"), new Option("fIoNa"));
+        List<String> rightAnswers = reader.read().stream().map(Question::getOptions).flatMap(Collection::stream).filter(Option::isRight).map(Option::getText).collect(Collectors.toList());
+        List<String> actualAnswers = List.of("1976", "5", "poland", "green", "fIoNa");
 
         validator.validate(rightAnswers, actualAnswers);
 
