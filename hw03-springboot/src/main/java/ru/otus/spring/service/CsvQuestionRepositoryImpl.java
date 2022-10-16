@@ -19,14 +19,14 @@ import ru.otus.spring.domain.Option;
 import ru.otus.spring.domain.Question;
 
 @Service
-public class CsvReaderImpl implements Reader {
+public class CsvQuestionRepositoryImpl implements QuestionRepository {
 
     private final ResourceProvider resourceProvider;
-    private static final Logger log = LoggerFactory.getLogger(CsvReaderImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(CsvQuestionRepositoryImpl.class);
     private static final int QUESTION_TEXT_CELL_INDEX = 0;
     private static final int ANSWER_CELL_INDEX = 5;
 
-    public CsvReaderImpl(ResourceProvider resourceProvider) {
+    public CsvQuestionRepositoryImpl(ResourceProvider resourceProvider) {
         this.resourceProvider = resourceProvider;
     }
 

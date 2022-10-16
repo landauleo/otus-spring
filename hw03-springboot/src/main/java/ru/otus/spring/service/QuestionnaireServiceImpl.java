@@ -13,14 +13,14 @@ import ru.otus.spring.domain.Question;
 @Service
 public class QuestionnaireServiceImpl implements QuestionnaireService {
 
-    private final Reader reader;
+    private final QuestionRepository questionRepository;
     private final Validator validator;
     private final MessageSourceService messageSource;
     private final IOService ioService;
 
     //тут должен сработать автовайринг по дефолту, так как всего лишь 1 конструктор
-    public QuestionnaireServiceImpl(Reader reader, Validator validator, MessageSourceService messageSource) {
-        this.reader = reader;
+    public QuestionnaireServiceImpl(QuestionRepository questionRepository, Validator validator, MessageSourceService messageSource) {
+        this.questionRepository = questionRepository;
         this.validator = validator;
         this.messageSource = messageSource;
         this.ioService = new IOServiceStreams(System.out, System.in);;
@@ -31,7 +31,7 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
         messageSource.getAndPrintMessage("greeting.user", new String[]{"(◕‿◕)"});
         messageSource.getAndPrintMessage("greeting.warning", null);
 
-        List<Question> questions = reader.read();
+        List<Question> questions = questionRepository.read();
         List<String> userAnswers = new ArrayList<>();
         List<String> rightAnswers = getRightAnswers(questions);
 

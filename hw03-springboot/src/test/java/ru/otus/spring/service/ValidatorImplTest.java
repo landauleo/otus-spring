@@ -22,7 +22,7 @@ class ValidatorImplTest {
     private Validator validator;
 
     @Autowired
-    private Reader reader;
+    private QuestionRepository questionRepository;
 
     @MockBean
     private MainCommandLineRunner commandLineRunner;
@@ -33,7 +33,7 @@ class ValidatorImplTest {
         PrintStream ps = new PrintStream(baos);
         System.setOut(ps);
 
-        List<String> rightAnswers = reader.read().stream().map(Question::getOptions).flatMap(Collection::stream).filter(Option::isRight).map(Option::getText).collect(Collectors.toList());
+        List<String> rightAnswers = questionRepository.read().stream().map(Question::getOptions).flatMap(Collection::stream).filter(Option::isRight).map(Option::getText).collect(Collectors.toList());
         List<String> wrongAnswers = List.of("blah-blah", "blah-blah", "blah-blah", "blah-blah");
 
         Assertions.assertDoesNotThrow(() -> validator.validate(rightAnswers, wrongAnswers));
@@ -46,7 +46,7 @@ class ValidatorImplTest {
         PrintStream ps = new PrintStream(baos);
         System.setOut(ps);
 
-        List<String> rightAnswers = reader.read().stream().map(Question::getOptions).flatMap(Collection::stream).filter(Option::isRight).map(option -> option.getText().toLowerCase(Locale.ROOT)).collect(Collectors.toList());
+        List<String> rightAnswers = questionRepository.read().stream().map(Question::getOptions).flatMap(Collection::stream).filter(Option::isRight).map(option -> option.getText().toLowerCase(Locale.ROOT)).collect(Collectors.toList());
         List<String> actualAnswers = List.of("1976", "5", "польша", "зелёный", "фиона");
 
         Assertions.assertDoesNotThrow(() -> validator.validate(rightAnswers, actualAnswers));
@@ -58,7 +58,7 @@ class ValidatorImplTest {
         PrintStream ps = new PrintStream(baos);
         System.setOut(ps);
 
-        List<String> rightAnswers = reader.read().stream().map(Question::getOptions).flatMap(Collection::stream).filter(Option::isRight).map(Option::getText).collect(Collectors.toList());
+        List<String> rightAnswers = questionRepository.read().stream().map(Question::getOptions).flatMap(Collection::stream).filter(Option::isRight).map(Option::getText).collect(Collectors.toList());
         List<String> actualAnswers = List.of("1976", "5", "poland", "green", "fIoNa");
 
         Assertions.assertDoesNotThrow(() -> validator.validate(rightAnswers, actualAnswers));

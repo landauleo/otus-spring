@@ -1,7 +1,5 @@
 package ru.otus.spring.service;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.util.Locale;
 
 import org.junit.jupiter.api.Assertions;
@@ -18,7 +16,7 @@ class QuestionnaireServiceImplTest {
     private Validator validator;
 
     @MockBean
-    private Reader reader;
+    private QuestionRepository questionRepository;
 
     @Autowired
     private QuestionnaireServiceImpl service;

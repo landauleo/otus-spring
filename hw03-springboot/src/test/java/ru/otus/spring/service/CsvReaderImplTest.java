@@ -21,14 +21,14 @@ class CsvReaderImplTest {
     private Validator validator;
 
     @Autowired
-    private Reader reader;
+    private QuestionRepository questionRepository;
 
     @MockBean
     private MainCommandLineRunner commandLineRunner;
 
     @Test
     void testReadQuestionsNumber() {
-        List<Question> read = reader.read();
+        List<Question> read = questionRepository.read();
 
         assertEquals(5, read.size());
     }
