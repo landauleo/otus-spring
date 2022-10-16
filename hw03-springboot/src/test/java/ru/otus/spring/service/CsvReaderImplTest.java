@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import ru.otus.spring.config.AppProps;
 import ru.otus.spring.domain.Question;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,13 +14,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 class CsvReaderImplTest {
 
-    @Autowired
-    private AppProps appProps;
-
-    @Autowired
+    @MockBean
     private QuestionnaireService service;
 
-    @Autowired
+    @MockBean
     private Validator validator;
 
     @Autowired
