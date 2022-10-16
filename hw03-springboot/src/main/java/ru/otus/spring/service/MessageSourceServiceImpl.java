@@ -18,7 +18,7 @@ public class MessageSourceServiceImpl implements MessageSourceService{
     }
 
     @Override
-    public void getAndPrintMessage(String code, String[] args) {
+    public void printMessage(String code, String[] args) {
         ioService.outputString(messageSource.getMessage(code, args, appProps.getLocale()));
     }
 

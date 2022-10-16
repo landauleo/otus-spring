@@ -17,9 +17,9 @@ public class ValidatorImpl implements Validator {
     @Override
     public void validate(List<String> expected, List<String> actual) {
         if (Arrays.equals(expected.toArray(), actual.toArray())) {
-            messageSource.getAndPrintMessage("result.success", new String[]{"(◕‿◕)"});
+            messageSource.printMessage("result.success", new String[]{"(◕‿◕)"});
         } else {
-            messageSource.getAndPrintMessage("result.fail", new String[]{Arrays.toString(expected.toArray())});
+            messageSource.printMessage("result.fail", new String[]{Arrays.toString(expected.toArray())});
         }
     }
 }
