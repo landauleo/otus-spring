@@ -4,11 +4,11 @@ import org.springframework.stereotype.Service;
 import ru.otus.spring.config.AppProps;
 
 @Service
-public class ResourceServiceImpl implements ResourceService {
+public class ResourceProviderImpl implements ResourceProvider {
 
     private final AppProps appProps;
 
-    public ResourceServiceImpl(AppProps appProps) {
+    public ResourceProviderImpl(AppProps appProps) {
         this.appProps = appProps;
     }
 

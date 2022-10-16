@@ -1,6 +1,6 @@
 package ru.otus.spring.service;
 
-public interface ResourceService {
+public interface ResourceProvider {
 
     String getFilename();
 }

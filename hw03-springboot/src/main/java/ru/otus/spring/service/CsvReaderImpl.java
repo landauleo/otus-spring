@@ -21,18 +21,18 @@ import ru.otus.spring.domain.Question;
 @Service
 public class CsvReaderImpl implements Reader {
 
-    private final ResourceService resourceService;
+    private final ResourceProvider resourceProvider;
     private static final Logger log = LoggerFactory.getLogger(CsvReaderImpl.class);
     private static final int QUESTION_TEXT_CELL_INDEX = 0;
     private static final int ANSWER_CELL_INDEX = 5;
 
-    public CsvReaderImpl(ResourceService resourceService) {
-        this.resourceService = resourceService;
+    public CsvReaderImpl(ResourceProvider resourceProvider) {
+        this.resourceProvider = resourceProvider;
     }
 
     @Override
     public List<Question> read() {
-        String fileName = resourceService.getFilename();
+        String fileName = resourceProvider.getFilename();
         log.info("Is about read CSV-file");
 
         if (fileName.trim().equals("")) {
