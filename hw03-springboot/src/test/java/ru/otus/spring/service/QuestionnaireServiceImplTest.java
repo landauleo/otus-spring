@@ -18,7 +18,7 @@ class QuestionnaireServiceImplTest {
     @MockBean
     private QuestionRepository questionRepository;
 
-    @Autowired
+    @MockBean
     private QuestionnaireServiceImpl service;
 
     @Autowired

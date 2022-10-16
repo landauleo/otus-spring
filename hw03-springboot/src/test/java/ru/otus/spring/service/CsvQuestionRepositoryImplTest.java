@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 @SpringBootTest
-class CsvReaderImplTest {
+class CsvQuestionRepositoryImplTest {
 
     @MockBean
     private QuestionnaireService service;
