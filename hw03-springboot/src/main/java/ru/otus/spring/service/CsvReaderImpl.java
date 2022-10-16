@@ -46,9 +46,9 @@ public class CsvReaderImpl implements Reader {
         }
 
         List<Question> questions = new ArrayList<>();
-        try {
-            CSVParser parser = new CSVParserBuilder().withSeparator(';').build();
-            CSVReader reader = new CSVReaderBuilder(new InputStreamReader(inputStream)).withCSVParser(parser).build();
+
+        CSVParser parser = new CSVParserBuilder().withSeparator(';').build();
+        try (CSVReader reader = new CSVReaderBuilder(new InputStreamReader(inputStream)).withCSVParser(parser).build()) {
             String[] nextLine;
             while ((nextLine = reader.readNext()) != null) {
                 String questionText = getQuestionText(nextLine);
@@ -56,7 +56,6 @@ public class CsvReaderImpl implements Reader {
                 Question question = new Question(questionText, options);
                 questions.add(question);
             }
-            reader.close();
         } catch (IOException | CsvValidationException e) {
             log.error(e.getMessage());
         }
