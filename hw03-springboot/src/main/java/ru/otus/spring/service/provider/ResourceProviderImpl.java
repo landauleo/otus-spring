@@ -1,20 +1,19 @@
 package ru.otus.spring.service.provider;
 
-import org.springframework.stereotype.Service;
-import ru.otus.spring.config.AppProps;
-
-@Service
 public class ResourceProviderImpl implements ResourceProvider {
 
-    private final AppProps appProps;
+    private final LocaleProvider localeProvider;
 
-    public ResourceProviderImpl(AppProps appProps) {
-        this.appProps = appProps;
+    private final String fileBaseName;
+
+    public ResourceProviderImpl(LocaleProvider localeProvider, String fileBaseName) {
+        this.localeProvider = localeProvider;
+        this.fileBaseName = fileBaseName;
     }
 
     @Override
     public String getFilename() {
-        return appProps.getLocale().toString() + "_" + appProps.getPath().getBasename();
+        return localeProvider.getLocale() + "_" + fileBaseName;
     }
 
 }

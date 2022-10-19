@@ -8,6 +8,7 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,6 +32,7 @@ class ValidatorImplTest {
     private MainCommandLineRunner commandLineRunner;
 
     @Test
+    @DisplayName("Не бросает ошибку при вводе неправильных ответов")
     void testValidateWrongAnswers() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
@@ -44,6 +46,7 @@ class ValidatorImplTest {
     }
 
     @Test
+    @DisplayName("Не бросает ошибку при вводе правильных ответов в правильной локали")
     void testValidateRightInRightLocaleAnswers() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
@@ -56,6 +59,7 @@ class ValidatorImplTest {
     }
 
     @Test
+    @DisplayName("Не бросает ошибку при вводе правильных ответов в неправильной локали")
     void testValidateRightInWrongLocaleAnswers() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
