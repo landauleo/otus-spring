@@ -12,8 +12,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import ru.otus.spring.MainCommandLineRunner;
 import ru.otus.spring.domain.Option;
 import ru.otus.spring.domain.Question;
+import ru.otus.spring.repository.QuestionRepository;
+import ru.otus.spring.service.validator.Validator;
 
 @SpringBootTest
 class ValidatorImplTest {

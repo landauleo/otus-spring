@@ -1,4 +1,4 @@
-package ru.otus.spring.service;
+package ru.otus.spring.repository;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,19 +14,20 @@ import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import ru.otus.spring.domain.Option;
 import ru.otus.spring.domain.Question;
+import ru.otus.spring.service.provider.ResourceProvider;
 
-@Service
-public class CsvQuestionRepositoryImpl implements QuestionRepository {
+@Repository
+public class CsvQuestionRepository implements QuestionRepository {
 
     private final ResourceProvider resourceProvider;
-    private static final Logger log = LoggerFactory.getLogger(CsvQuestionRepositoryImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(CsvQuestionRepository.class);
     private static final int QUESTION_TEXT_CELL_INDEX = 0;
     private static final int ANSWER_CELL_INDEX = 5;
 
-    public CsvQuestionRepositoryImpl(ResourceProvider resourceProvider) {
+    public CsvQuestionRepository(ResourceProvider resourceProvider) {
         this.resourceProvider = resourceProvider;
     }
 

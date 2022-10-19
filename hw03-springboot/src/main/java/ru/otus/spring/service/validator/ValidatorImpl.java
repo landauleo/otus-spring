@@ -1,9 +1,10 @@
-package ru.otus.spring.service;
+package ru.otus.spring.service.validator;
 
 import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import ru.otus.spring.service.MessageSourceService;
 
 @Service
 public class ValidatorImpl implements Validator {

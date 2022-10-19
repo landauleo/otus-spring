@@ -1,7 +1,8 @@
-package ru.otus.spring.service;
+package ru.otus.spring;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import ru.otus.spring.service.QuestionnaireService;
 
 /*
  * Теперь, кстати, при создании нового модуля в IDE можно выбирать сразу опцию : New -> Module... -> Spring Boot Initializr

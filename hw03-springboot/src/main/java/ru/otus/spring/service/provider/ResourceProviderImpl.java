@@ -1,4 +1,4 @@
-package ru.otus.spring.service;
+package ru.otus.spring.service.provider;
 
 import org.springframework.stereotype.Service;
 import ru.otus.spring.config.AppProps;
