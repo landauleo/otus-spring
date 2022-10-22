@@ -4,10 +4,11 @@ import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.ApplicationContext;
 import ru.otus.spring.MainCommandLineRunner;
 import ru.otus.spring.domain.Question;
 import ru.otus.spring.repository.CsvQuestionRepository;
@@ -36,12 +37,17 @@ class CsvQuestionRepositoryTest {
     @MockBean
     private MainCommandLineRunner commandLineRunner;
 
-    @Mock
+    @MockBean
     private ResourceProvider resourceProvider;
+
+    @Autowired
+    private ApplicationContext context;
 
     @Test
     @DisplayName("Возвращает не пустой список из 5 объектов")
     void testReadQuestionsNumber() {
+        when(resourceProvider.getFilename()).thenReturn("ru_ru_questionnaire.csv");
+
         List<Question> read = questionRepository.read();
 
         assertFalse(read.isEmpty());
@@ -51,6 +57,8 @@ class CsvQuestionRepositoryTest {
     @Test
     @DisplayName("Возвращает список из объектов класса Question")
     void testReadQuestionsType() {
+        when(resourceProvider.getFilename()).thenReturn("ru_ru_questionnaire.csv");
+
         List<Question> read = questionRepository.read();
 
         read.forEach(question -> assertEquals(Question.class, question.getClass()));
@@ -61,8 +69,9 @@ class CsvQuestionRepositoryTest {
     void testReadQuestionsFromUnknownFile() {
         when(resourceProvider.getFilename()).thenReturn("Sectumsempra");
 
-        questionRepository = new CsvQuestionRepository(resourceProvider);
+        questionRepository = context.getBean(CsvQuestionRepository.class);
 
+        Mockito.when(resourceProvider.getFilename()).thenReturn("Sectumsempra");
         Exception exception = assertThrows(IllegalArgumentException.class, () -> questionRepository.read());
         assertEquals(exception.getMessage(), "Can't find .csv file with name Sectumsempra");
     }
@@ -72,7 +81,7 @@ class CsvQuestionRepositoryTest {
     void testReadQuestionsFromFileWithBlankName() {
         when(resourceProvider.getFilename()).thenReturn("   ");
 
-        questionRepository = new CsvQuestionRepository(resourceProvider);
+        questionRepository = context.getBean(CsvQuestionRepository.class, resourceProvider);
 
         Exception exception = assertThrows(IllegalArgumentException.class, () -> questionRepository.read());
         assertEquals(exception.getMessage(), "Filename can't be blank");
