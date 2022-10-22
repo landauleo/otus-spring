@@ -21,11 +21,11 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
     private final IOService ioService;
 
     //тут должен сработать автовайринг по дефолту, так как всего лишь 1 конструктор
-    public QuestionnaireServiceImpl(QuestionRepository questionRepository, Validator validator, MessageSourceService messageSource) {
+    public QuestionnaireServiceImpl(QuestionRepository questionRepository, Validator validator, MessageSourceService messageSource, IOService ioService) {
         this.questionRepository = questionRepository;
         this.validator = validator;
         this.messageSource = messageSource;
-        this.ioService = new IOServiceStreams(System.out, System.in);;
+        this.ioService = ioService;
     }
 
     @Override
