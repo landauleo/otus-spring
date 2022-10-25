@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.ApplicationContext;
 import ru.otus.spring.MainCommandLineRunner;
 import ru.otus.spring.domain.Question;
 import ru.otus.spring.repository.QuestionRepository;
@@ -37,9 +36,6 @@ class CsvQuestionRepositoryTest {
 
     @MockBean
     private ResourceProvider resourceProvider;
-
-    @Autowired
-    private ApplicationContext context;
 
     @Test
     @DisplayName("Возвращает не пустой список из 5 объектов")
