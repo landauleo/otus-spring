@@ -4,14 +4,12 @@ import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContext;
 import ru.otus.spring.MainCommandLineRunner;
 import ru.otus.spring.domain.Question;
-import ru.otus.spring.repository.CsvQuestionRepository;
 import ru.otus.spring.repository.QuestionRepository;
 import ru.otus.spring.service.provider.ResourceProvider;
 import ru.otus.spring.service.validator.Validator;
@@ -69,9 +67,6 @@ class CsvQuestionRepositoryTest {
     void testReadQuestionsFromUnknownFile() {
         when(resourceProvider.getFilename()).thenReturn("Sectumsempra");
 
-        questionRepository = context.getBean(CsvQuestionRepository.class);
-
-        Mockito.when(resourceProvider.getFilename()).thenReturn("Sectumsempra");
         Exception exception = assertThrows(IllegalArgumentException.class, () -> questionRepository.read());
         assertEquals(exception.getMessage(), "Can't find .csv file with name Sectumsempra");
     }
@@ -80,8 +75,6 @@ class CsvQuestionRepositoryTest {
     @DisplayName("Кидает ошибку, если имя файла пустое")
     void testReadQuestionsFromFileWithBlankName() {
         when(resourceProvider.getFilename()).thenReturn("   ");
-
-        questionRepository = context.getBean(CsvQuestionRepository.class, resourceProvider);
 
         Exception exception = assertThrows(IllegalArgumentException.class, () -> questionRepository.read());
         assertEquals(exception.getMessage(), "Filename can't be blank");
