@@ -1,0 +1,10 @@
+spring:
+  messages:
+    basename: i18n/messages
+
+questionnaire:
+  path:
+    basename: questionnaire.csv
+  locale: ru_RU
+
+

@@ -1,0 +1,13 @@
+spring:
+  banner:
+    location: classpath:banner.txt
+  messages:
+    basename: i18n/messages
+#    encoding: UTF-8 //итак по умолчанию https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html
+
+questionnaire:
+  path:
+    basename: questionnaire.csv # очень странная штука, но с именем ru_questionnaire.csv inputStream был пустой
+  locale: ru_RU
+
+
