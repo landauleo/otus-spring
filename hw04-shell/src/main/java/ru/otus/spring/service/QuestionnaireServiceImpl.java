@@ -30,7 +30,6 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
 
     @Override
     public void run() {
-        messageSource.printMessage("greeting.user", new String[]{"(◕‿◕)"});
         messageSource.printMessage("greeting.warning", null);
 
         List<Question> questions = questionRepository.read();
