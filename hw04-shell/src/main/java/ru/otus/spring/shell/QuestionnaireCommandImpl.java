@@ -30,17 +30,17 @@ public class QuestionnaireCommandImpl implements QuestionnaireCommand {
     }
 
     @Override
-    @ShellMethod(value = "Authenticate user", key = {"1", "start", "auth", "authenticate"})
-    @ShellMethodAvailability(value = "shouldAuthenticate")
-    public void authenticate() {
-        messageSource.printMessage("authentication.user", null);
+    @ShellMethod(value = "Start quiz for new user", key = {"1", "start", "begin", "палочки_да_ёлочки"})
+    @ShellMethodAvailability(value = "canStart")
+    public void start() {
+        messageSource.printMessage("introduction.user", null);
         userName = ioService.readString().trim().toLowerCase(Locale.ROOT);
         messageSource.printMessage("greeting.user", new String[]{userName});
         questionnaireService.run();
     }
 
-    private Availability shouldAuthenticate() {
-        return userName == null ? available() : unavailable("User has already introduced");
+    private Availability canStart() {
+        return userName == null ? available() : unavailable("Only new users can be introduced");
     }
 
 }
