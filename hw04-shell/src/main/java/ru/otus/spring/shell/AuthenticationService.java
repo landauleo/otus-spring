@@ -22,7 +22,7 @@ public class AuthenticationService {
     private final MessageSourceService messageSource;
     private final IOService ioService;
     private final QuestionnaireService questionnaireService;
-    private AtomicReference<String> userName = new AtomicReference<>();
+    private String userName;
 
     public AuthenticationService(MessageSourceService messageSource, IOService ioService, QuestionnaireService questionnaireService) {
         this.messageSource = messageSource;
@@ -34,12 +34,12 @@ public class AuthenticationService {
     @ShellMethodAvailability(value = "shouldAuthenticate")
     public void authenticate() {
         messageSource.printMessage("authentication.user", null);
-        userName.set(ioService.readString().trim().toLowerCase(Locale.ROOT));
+        userName = ioService.readString().trim().toLowerCase(Locale.ROOT);
         messageSource.printMessage("greeting.user", new String[]{String.valueOf(userName)});
         questionnaireService.run();
     }
 
     private Availability shouldAuthenticate() {
-        return userName.get() == null ? available() : unavailable("User has already introduced");
+        return userName == null ? available() : unavailable("User has already introduced");
     }
 }
