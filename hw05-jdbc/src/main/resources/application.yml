@@ -1,12 +1,12 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:testdb
+    url: jdbc:h2:mem:testdb #не забыть указать параметр в консоли H2
     #initialization-mode: always  => deprecated since SpringBoot 2.5 use spring.sql.init.mode=always  instead
     #schema: schema.sql
     #data: data.sql
   sql: #https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html#appendix.application-properties.core
     init:
-      mode: always
+      mode: always #when initialize schema.sql, data.sql
       data-locations: data.sql #Locations of the data (DML) scripts to apply to the database
       schema-locations: schema.sql #Locations of the schema (DDL) scripts to apply to the database
   h2:

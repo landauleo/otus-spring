@@ -4,11 +4,11 @@ import ru.otus.spring.domain.Author;
 
 import java.util.List;
 
-public interface PersonDao {
-
-    int count();
+public interface AuthorDao {
 
     void insert(Author author);
+
+    void update(Author author);
 
     Author getById(long id);
 

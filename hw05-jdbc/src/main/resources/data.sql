@@ -1,1 +1,1 @@
-insert into persons (id, `name`) values (1, 'masha');
+insert into author (id, `name`) values (1, 'bodler');
