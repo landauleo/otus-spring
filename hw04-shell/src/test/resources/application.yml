@@ -1,0 +1,15 @@
+spring:
+  messages:
+    basename: i18n/messages
+  shell:
+    interactive:
+      enabled: false
+
+questionnaire:
+  path:
+    basename: questionnaire.csv
+  locale: ru_RU
+
+
+
+
