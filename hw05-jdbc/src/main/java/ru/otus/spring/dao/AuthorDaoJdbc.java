@@ -1,5 +1,6 @@
 package ru.otus.spring.dao;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Repository;
@@ -12,14 +13,11 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
+@RequiredArgsConstructor
 public class AuthorDaoJdbc implements AuthorDao {
 
     //wraps a JdbcTemplate to provide named parameters instead of the traditional JDBC "?" placeholders
     private final NamedParameterJdbcOperations jdbc;
-
-    public AuthorDaoJdbc(NamedParameterJdbcOperations jdbc) {
-        this.jdbc = jdbc;
-    }
 
     @Override
     public void insert(Author author) {
