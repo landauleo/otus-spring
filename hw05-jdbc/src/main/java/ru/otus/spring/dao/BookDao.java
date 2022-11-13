@@ -1,16 +1,14 @@
 package ru.otus.spring.dao;
 
-import java.util.List;
-
-import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
-import ru.otus.spring.domain.Genre;
+
+import java.util.List;
 
 public interface BookDao {
 
-    void insert(Book book, Genre genre, Author author);
+    long insert(Book book);
 
-    void update(Book book, Genre genre, Author author);
+    void update(Book book);
 
     Book getById(long id);
 

@@ -1,10 +1,8 @@
 package ru.otus.spring.dao;
 
-import java.util.List;
-
-import ru.otus.spring.domain.Author;
-import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.Genre;
+
+import java.util.List;
 
 public interface GenreDao {
 
@@ -13,6 +11,8 @@ public interface GenreDao {
     void update(Genre genre);
 
     Genre getById(long id);
+
+    Genre getByName(String name);
 
     List<Genre> getAll();
 

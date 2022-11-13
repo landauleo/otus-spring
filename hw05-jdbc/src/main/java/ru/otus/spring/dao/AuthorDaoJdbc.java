@@ -8,7 +8,6 @@ import ru.otus.spring.domain.Author;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +36,12 @@ public class AuthorDaoJdbc implements AuthorDao {
                 Map.of("id", id), new AuthorMapper());
     }
 
+    @Override
+    public Author getByName(String name) {
+        return jdbc.queryForObject("select id, name from author where name = :name",
+                Map.of("name", name), new AuthorMapper());
+    }
+
     //звёздочка - грех, параметры меняются, а запросы остаются
     @Override
     public List<Author> getAll() {
@@ -54,7 +59,7 @@ public class AuthorDaoJdbc implements AuthorDao {
         public Author mapRow(ResultSet resultSet, int i) throws SQLException {
             long id = resultSet.getLong("id");
             String name = resultSet.getString("name");
-            return new Author(id, name, Collections.emptySet()); //TODO тут вытаскивать из другого DAO, ета ок?
+            return new Author(id, name);
         }
     }
 }

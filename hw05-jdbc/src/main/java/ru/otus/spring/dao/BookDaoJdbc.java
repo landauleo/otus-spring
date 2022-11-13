@@ -1,47 +1,71 @@
 package ru.otus.spring.dao;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.Genre;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 
 @Repository
 @RequiredArgsConstructor
 public class BookDaoJdbc implements BookDao {
 
     private final NamedParameterJdbcOperations jdbc;
-    private final AuthorDao authorDao;
 
     @Override
-    public void insert(Book book, Genre genre, Author author) {
-        jdbc.update("INSERT INTO book (id, name, genre_id, author_id) VALUES (:id, :name, :genre_id, :author_id)",
-                Map.of("id", book.getId(), "name", book.getName(), "genre_id", genre.getId(), "author_id", author.getId()));
+    public long insert(Book book) {
+//        KeyHolder keyHolder = new GeneratedKeyHolder();
+//
+//        SqlParameterSource params = new MapSqlParameterSource(Map.of("name", book.getName(), "genreId", book.getGenre().getId(), "authorId", book.getAuthor().getId()));
+//
+//        jdbc.update("INSERT INTO book (name, genre_id, author_id) VALUES (:name, :genreId, :authorId)", params, keyHolder); //НЕЛЬЗЯ ПРОСТО ТАК ВЗЯТЬ И НАЗВАТЬ ПАРАМЕТРЫ ТАКЖЕ КАК И КОЛОНКИ ТАБЛИЦЫ, ТО ЕСТЬ ТАК: "INSERT INTO book (name, genre_id, author_id) VALUES (:name, :genre_id, :author_id)" НЕ ЗАРАБОТАЕТ
+//        return keyHolder.getKey().longValue();
+
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("name", book.getName());
+        params.addValue("authorId", book.getAuthor().getId());
+        params.addValue("genreId", book.getGenre().getId());
+
+        KeyHolder kh = new GeneratedKeyHolder();
+        jdbc.update("insert into book (name, author_id, genre_id) values (:name, :authorId, :genreId)",
+                params, kh, new String[]{"id"});
+
+        return kh.getKey().longValue();
     }
 
     @Override
-    public void update(Book book, Genre genre, Author author) {
+    public void update(Book book) {
         jdbc.update("UPDATE book SET name = :name, genre_id = :genre_id, author_id = :author_id WHERE id = :id",
-                Map.of("id", book.getId(), "name", book.getName(), "genre_id", genre.getId(), "author_id", author.getId()));
+                Map.of("id", book.getId(), "name", book.getName(), "genre_id", book.getGenre().getId(), "author_id", book.getAuthor().getId()));
     }
 
     @Override
     public Book getById(long id) {
-        return jdbc.queryForObject("select id, name, genre_id, author_id from book where id = :id",
+        return jdbc.queryForObject("select book.id, book.name, genre_id, author_id, genre.name, author.name " +
+                        "from book " +
+                        "join genre on book.genre_id=genre.id " +
+                        "join author on book.author_id=author.id " +
+                        "where book.id = :id ",
                 Map.of("id", id), new BookMapper());
     }
 
     @Override
     public List<Book> getAll() {
-        return jdbc.query("SELECT id, name, genre_id, author_id FROM book", new BookMapper());
+        return jdbc.query("select book.id, book.name, genre_id, author_id, genre.name, author.name " +
+                "from book " +
+                "join genre on book.genre_id=genre.id " +
+                "join author on book.author_id=author.id ", new BookMapper());
     }
 
     @Override
@@ -55,9 +79,9 @@ public class BookDaoJdbc implements BookDao {
         public Book mapRow(ResultSet resultSet, int i) throws SQLException {
             long id = resultSet.getLong("id");
             String name = resultSet.getString("name");
-            long genreId = resultSet.getLong("genre_id");
-            long authorId = resultSet.getLong("author_id");
-            return new Book(id, name, genre, ); //TODO тут вытаскивать из другого DAO, ета ок?
+            Genre genre = new Genre(resultSet.getLong("genre_id"), resultSet.getString("genre.name"));
+            Author author = new Author(resultSet.getLong("author_id"), resultSet.getString("author.name"));
+            return new Book(id, name, genre, author);
         }
 
     }
