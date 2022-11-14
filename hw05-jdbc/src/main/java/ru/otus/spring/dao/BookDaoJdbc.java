@@ -25,23 +25,16 @@ public class BookDaoJdbc implements BookDao {
 
     @Override
     public long insert(Book book) {
-//        KeyHolder keyHolder = new GeneratedKeyHolder();
-//
-//        SqlParameterSource params = new MapSqlParameterSource(Map.of("name", book.getName(), "genreId", book.getGenre().getId(), "authorId", book.getAuthor().getId()));
-//
-//        jdbc.update("INSERT INTO book (name, genre_id, author_id) VALUES (:name, :genreId, :authorId)", params, keyHolder); //НЕЛЬЗЯ ПРОСТО ТАК ВЗЯТЬ И НАЗВАТЬ ПАРАМЕТРЫ ТАКЖЕ КАК И КОЛОНКИ ТАБЛИЦЫ, ТО ЕСТЬ ТАК: "INSERT INTO book (name, genre_id, author_id) VALUES (:name, :genre_id, :author_id)" НЕ ЗАРАБОТАЕТ
-//        return keyHolder.getKey().longValue();
-
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("name", book.getName());
         params.addValue("authorId", book.getAuthor().getId());
         params.addValue("genreId", book.getGenre().getId());
 
-        KeyHolder kh = new GeneratedKeyHolder();
-        jdbc.update("insert into book (name, author_id, genre_id) values (:name, :authorId, :genreId)",
-                params, kh, new String[]{"id"});
+        KeyHolder keyHolder = new GeneratedKeyHolder();
 
-        return kh.getKey().longValue();
+        jdbc.update("insert into book (name, author_id, genre_id) values (:name, :authorId, :genreId)", params, keyHolder, new String[]{"id"});
+
+        return keyHolder.getKey().longValue();
     }
 
     @Override
