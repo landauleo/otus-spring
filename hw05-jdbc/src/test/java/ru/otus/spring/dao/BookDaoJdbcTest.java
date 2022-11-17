@@ -18,7 +18,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @JdbcTest
 @Import(BookDaoJdbc.class)
 @DisplayName("Dao для работы с книгами")
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class BookDaoJdbcTest {
 
     @Autowired
@@ -26,22 +25,22 @@ class BookDaoJdbcTest {
 
     @Test
     @DisplayName("Сохраняет книгу")
-    @Order(1)
+    @Sql(statements = "TRUNCATE TABLE book;")
     void testInsert() {
         Genre genre = new Genre(1, "poem");
         Author author = new Author(1, "yoshimoto banana");
-        Book book = new Book(2, "sleeping", genre, author);
+        Book book = new Book( "sleeping", genre, author);
 
 
         int originalSize = bookDaoJdbc.getAll().size();
-        assertEquals(1, originalSize);
+        assertEquals(0, originalSize);
         long bookId = bookDaoJdbc.insert(book);
+        book.setId(bookId);
         Book foundBook = bookDaoJdbc.getById(bookId);
         int updatedSize = bookDaoJdbc.getAll().size();
 
-        assertEquals(2, bookId);
         assertNotEquals(originalSize, updatedSize);
-        assertEquals(2, updatedSize);
+        assertEquals(1, updatedSize);
         assertEquals(book, foundBook);
     }
 
@@ -50,27 +49,27 @@ class BookDaoJdbcTest {
     void testUpdate() {
         Genre genre = new Genre(1, "poem");
         Author author = new Author(1, "yoshimoto banana");
-        Book updatedVersionOfBook = new Book(1, "tsugumi", genre, author);
+        Book book = new Book( "sleeping", genre, author);
 
-        Book originalBook = bookDaoJdbc.getById(1);
-        int size = bookDaoJdbc.getAll().size();
+        long bookId = bookDaoJdbc.insert(book);
+        Book originalBookFromDb = bookDaoJdbc.getById(bookId);
+        Book updatedVersionOfBook = new Book( bookId, "tsugumi", genre, author);
 
         bookDaoJdbc.update(updatedVersionOfBook);
-        Book updatedBookFromDb = bookDaoJdbc.getById(1);
+        Book updatedBookFromDb = bookDaoJdbc.getById(bookId);
 
         assertEquals(updatedVersionOfBook, updatedBookFromDb);
-        assertNotEquals(originalBook, updatedBookFromDb);
-        assertEquals(1, size);
+        assertNotEquals(originalBookFromDb, updatedBookFromDb);
     }
 
     @Test
-    @DisplayName("Полоучает книгу по ID")
-    @Order(2)
+    @DisplayName("Получает книгу по ID")
     void testGetById() {
         Genre genre = new Genre(1, "poem");
         Author author = new Author(1, "yoshimoto banana");
-        Book book = new Book(3, "sleeping", genre, author);
+        Book book = new Book( "sleeping", genre, author);
         long bookId = bookDaoJdbc.insert(book);
+        book.setId(bookId);
 
         Book bookFromDb = bookDaoJdbc.getById(bookId);
 
