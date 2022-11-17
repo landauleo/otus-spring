@@ -19,8 +19,8 @@ public class GenreDaoJdbc implements GenreDao {
 
     @Override
     public void insert(Genre genre) {
-        jdbc.update("INSERT INTO genre (id, name) VALUES (:id, :name)",
-                Map.of("id", genre.getId(), "name", genre.getName()));
+        jdbc.update("INSERT INTO genre (name) VALUES (:name)",
+                Map.of( "name", genre.getName()));
     }
 
     @Override

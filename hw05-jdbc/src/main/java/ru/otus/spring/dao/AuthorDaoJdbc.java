@@ -1,15 +1,15 @@
 package ru.otus.spring.dao;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Repository;
 import ru.otus.spring.domain.Author;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
 
 @Repository
 @RequiredArgsConstructor
@@ -20,8 +20,8 @@ public class AuthorDaoJdbc implements AuthorDao {
 
     @Override
     public void insert(Author author) {
-        jdbc.update("insert into author (id, name) values (:id, :name)",
-                Map.of("id", author.getId(), "name", author.getName()));
+        jdbc.update("INSERT INTO author (name) VALUES (:name)",
+                Map.of("name", author.getName()));
     }
 
     @Override
