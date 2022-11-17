@@ -4,9 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class Main {
+public class Hw05 {
 
     public static void main(String[] args) {
-        SpringApplication.run(Main.class);
+        SpringApplication.run(Hw05.class);
     }
 }

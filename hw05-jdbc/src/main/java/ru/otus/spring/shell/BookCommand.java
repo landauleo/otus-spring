@@ -7,6 +7,7 @@ import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.service.BookService;
+import ru.otus.spring.service.BookServiceImpl;
 
 import java.util.List;
 

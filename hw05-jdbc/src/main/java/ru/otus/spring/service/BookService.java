@@ -1,40 +1,19 @@
 package ru.otus.spring.service;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import ru.otus.spring.dao.BookDao;
-import ru.otus.spring.domain.Book;
-
 import java.util.List;
 
-@Service
-@RequiredArgsConstructor
-public class BookService {
+import ru.otus.spring.domain.Book;
 
-    private final BookDao bookDao;
-    private final GenreService genreService;
-    private final AuthorService authorService;
+public interface BookService {
 
-    public long insert(String bookName, String genreName, String authorName) {
-        Book book = Book.builder().name(bookName).genre(genreService.getByName(genreName)).author(authorService.getByName(authorName)).build();
-        return bookDao.insert(book);
-    }
+    long insert(String bookName, String genreName, String authorName);
 
-    public void update(long id, String bookName, String genreName, String authorName) {
-        Book book = new Book(id, bookName, genreService.getByName(genreName), authorService.getByName(authorName));
-        bookDao.update(book);
-    }
+    void update(long id, String bookName, String genreName, String authorName);
 
-    public Book getById(long id) {
-        return bookDao.getById(id);
-    }
+    Book getById(long id);
 
-    public List<Book> getAll() {
-        return bookDao.getAll();
-    }
+    List<Book> getAll();
 
-    public void deleteById(long id) {
-        bookDao.deleteById(id);
-    }
+    void deleteById(long id);
 
 }

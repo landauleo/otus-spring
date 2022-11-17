@@ -1,5 +1,8 @@
 package ru.otus.spring.service;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,29 +15,30 @@ import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.Genre;
 
-import java.util.Collections;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
-@Import(BookService.class)
+@Import(BookServiceImpl.class)
 @DisplayName("Service для работы с книгами")
 class BookServiceTest {
 
     @MockBean
-    private AuthorService authorService;
+    private AuthorServiceImpl authorService;
 
     @MockBean
-    private GenreService genreService;
+    private GenreServiceImpl genreService;
 
     @MockBean
     private BookDao bookDao;
 
     @Autowired
-    private BookService bookService;
+    private BookServiceImpl bookService;
 
     @Test
     @DisplayName("Сохраняет книгу")
