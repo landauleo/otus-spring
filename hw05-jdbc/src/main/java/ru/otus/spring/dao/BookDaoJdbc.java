@@ -47,8 +47,8 @@ public class BookDaoJdbc implements BookDao {
     public Book getById(long id) {
         return jdbc.queryForObject("select book.id, book.name, genre_id, author_id, genre.name, author.name " +
                         "from book " +
-                        "join genre on book.genre_id=genre.id " +
-                        "join author on book.author_id=author.id " +
+                        "inner join genre on book.genre_id=genre.id " +
+                        "inner join author on book.author_id=author.id " +
                         "where book.id = :id ",
                 Map.of("id", id), new BookMapper());
     }
@@ -57,8 +57,8 @@ public class BookDaoJdbc implements BookDao {
     public List<Book> getAll() {
         return jdbc.query("select book.id, book.name, genre_id, author_id, genre.name, author.name " +
                 "from book " +
-                "join genre on book.genre_id=genre.id " +
-                "join author on book.author_id=author.id ", new BookMapper());
+                "inner join genre on book.genre_id=genre.id " +
+                "inner join author on book.author_id=author.id ", new BookMapper());
     }
 
     @Override
