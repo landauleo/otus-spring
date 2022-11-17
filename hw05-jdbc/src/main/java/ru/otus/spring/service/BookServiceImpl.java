@@ -5,7 +5,9 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.otus.spring.dao.BookDao;
+import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
+import ru.otus.spring.domain.Genre;
 
 @Service
 @RequiredArgsConstructor
@@ -16,12 +18,18 @@ public class BookServiceImpl implements BookService {
     private final AuthorServiceImpl authorService;
 
     public long insert(String bookName, String genreName, String authorName) {
-        Book book = Book.builder().name(bookName).genre(genreService.getByName(genreName)).author(authorService.getByName(authorName)).build();
+        Genre genre = genreService.getByName(genreName);
+        Author author = authorService.getByName(authorName);
+
+        Book book = new Book(bookName, genre,author );
         return bookDao.insert(book);
     }
 
     public void update(long id, String bookName, String genreName, String authorName) {
-        Book book = new Book(id, bookName, genreService.getByName(genreName), authorService.getByName(authorName));
+        Genre genre = genreService.getByName(genreName);
+        Author author = authorService.getByName(authorName);
+
+        Book book = new Book(id, bookName, genre, author);
         bookDao.update(book);
     }
 
