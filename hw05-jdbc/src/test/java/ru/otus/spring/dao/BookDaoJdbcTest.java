@@ -25,7 +25,6 @@ class BookDaoJdbcTest {
 
     @Test
     @DisplayName("Сохраняет книгу")
-    @Sql(statements = "TRUNCATE TABLE book;")
     void testInsert() {
         Genre genre = new Genre(1, "poem");
         Author author = new Author(1, "yoshimoto banana");
@@ -83,7 +82,7 @@ class BookDaoJdbcTest {
         List<Book> books = bookDaoJdbc.getAll();
 
         assertNotEquals(Collections.emptyList(), books);
-        assertNotEquals(5, books.size());
+        assertEquals(5, books.size());
     }
 
     @Test

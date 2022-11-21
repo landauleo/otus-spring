@@ -1,6 +1,6 @@
-insert into author (id, `name`)
-values (1, 'bodler');
-insert into genre (id, `name`)
-values (1, 'poetry');
-insert into book (`name`, genre_id, author_id)
-values ('poetry', 1, 1);
+INSERT INTO author ( id, `NAME` )
+VALUES ( 1, 'bodler' );
+INSERT INTO genre ( id, `NAME` )
+VALUES ( 1, 'poetry' );
+INSERT INTO book ( `NAME`, genre_id, author_id )
+VALUES ( 'poetry', 1, 1 );
