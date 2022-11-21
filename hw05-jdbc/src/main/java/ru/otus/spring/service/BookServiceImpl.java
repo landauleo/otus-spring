@@ -14,14 +14,14 @@ import ru.otus.spring.domain.Genre;
 public class BookServiceImpl implements BookService {
 
     private final BookDao bookDao;
-    private final GenreServiceImpl genreService;
-    private final AuthorServiceImpl authorService;
+    private final GenreService genreService;
+    private final AuthorService authorService;
 
     public long insert(String bookName, String genreName, String authorName) {
         Genre genre = genreService.getByName(genreName);
         Author author = authorService.getByName(authorName);
 
-        Book book = new Book(bookName, genre,author );
+        Book book = new Book(bookName, genre, author);
         return bookDao.insert(book);
     }
 
