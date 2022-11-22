@@ -20,6 +20,7 @@
         <module>hw02-java-annotation-based-config</module>
         <module>hw03-springboot</module>
         <module>hw04-shell</module>
+        <module>hw05-jdbc</module>
     </modules>
 
 </project>
