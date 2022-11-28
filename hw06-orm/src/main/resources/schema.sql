@@ -21,3 +21,10 @@ CREATE TABLE book
     genre_id  bigint REFERENCES genre,
     author_id bigint REFERENCES author
 );
+
+CREATE TABLE comment
+(
+    id      bigserial NOT NULL PRIMARY KEY,
+    text    varchar(255),
+    book_id bigint REFERENCES book on delete cascade
+);

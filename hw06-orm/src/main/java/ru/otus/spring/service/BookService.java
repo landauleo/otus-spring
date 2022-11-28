@@ -3,12 +3,11 @@ package ru.otus.spring.service;
 import java.util.List;
 
 import ru.otus.spring.domain.Book;
+import ru.otus.spring.domain.Comment;
 
 public interface BookService {
 
-    long insert(String bookName, String genreName, String authorName);
-
-    void update(long id, String bookName, String genreName, String authorName);
+    long save(String bookName, String genreName, String authorName);
 
     Book getById(long id);
 

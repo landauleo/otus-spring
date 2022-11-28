@@ -45,9 +45,9 @@ class BookServiceTest {
     void insert() {
         when(authorService.getByName(anyString())).thenReturn(new Author(1, "yoshimoto banana"));
         when(genreService.getByName(anyString())).thenReturn(new Genre(1, "poem"));
-        when(bookDao.insert(any())).thenReturn(2L);
+        when(bookDao.save(any())).thenReturn(2L);
         long expectedId = 2L;
-        long finalId = bookService.insert("moshi moshi", "poem", "yoshimoto banana");
+        long finalId = bookService.save("moshi moshi", "poem", "yoshimoto banana");
 
         assertEquals(expectedId, finalId);
     }
@@ -58,7 +58,7 @@ class BookServiceTest {
         when(authorService.getByName(anyString())).thenReturn(new Author(1, "yoshimoto banana"));
         when(genreService.getByName(anyString())).thenReturn(new Genre(1, "poem"));
 
-        assertDoesNotThrow(() -> bookService.update(1, "amrita", "poem", "yoshimoto banana"));
+        assertDoesNotThrow(() -> bookService.save( "amrita", "poem", "yoshimoto banana"));
     }
 
     @Test

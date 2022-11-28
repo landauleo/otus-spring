@@ -1,7 +1,4 @@
 spring:
-#  shell:
-#    interactive:
-#      enabled: false //если не врубать @SpringBootTest, то нормально и без "выключения" shell тесты проходят
   main:
     allow-circular-references: true
   datasource:
@@ -15,3 +12,12 @@ spring:
       path: /h2-console
       settings:
         web-allow-others: true
+
+  jpa:
+    generate-ddl: false
+    #generate-ddl: true
+    hibernate:
+      ddl-auto: none
+      #ddl-auto: create-drop
+
+    show-sql: true
