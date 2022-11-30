@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DataJpaTest
@@ -106,6 +107,6 @@ class BookDaoJpaTest {
 
         assertNotNull(book);
         assertDoesNotThrow(() -> bookDaoJpa.deleteById(100));
-        assertThrows(NoResultException.class, () -> bookDaoJpa.getById(100));
+        assertNull(bookDaoJpa.getById(100));
     }
 }

@@ -1,7 +1,7 @@
 package ru.otus.spring.dao;
 
 import java.util.List;
-import javax.persistence.EntityGraph;
+import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
@@ -27,24 +27,13 @@ public class BookDaoJpa implements BookDao {
 
     @Override
     public Book getById(long id) {
-        EntityGraph<?> entityGraph = em.getEntityGraph("book-author-genre-entity-graph");
-        TypedQuery<Book> query = em.createQuery("select distinct b from Book b " +
-                "left join fetch b.genre " +
-                "left join fetch  b.author " +
-                "where b.id = :id", Book.class);
-        query.setHint("javax.persistence.fetchgraph", entityGraph);
-        query.setParameter("id", id);
-
-        return query.getSingleResult();
+        return em.find(Book.class, id, Map.of("javax.persistence.fetchgraph", em.getEntityGraph("book-author-genre-entity-graph")));
     }
 
     @Override
     public List<Book> getAll() {
-        EntityGraph<?> entityGraph = em.getEntityGraph("book-author-genre-entity-graph");
-        TypedQuery<Book> query = em.createQuery("select distinct b from Book b " +
-                "left join fetch b.genre " +
-                "left join fetch  b.author ", Book.class);
-        query.setHint("javax.persistence.fetchgraph", entityGraph);
+        TypedQuery<Book> query = em.createQuery("select b from Book b ", Book.class);
+        query.setHint("javax.persistence.fetchgraph", em.getEntityGraph("book-author-genre-entity-graph"));
         return query.getResultList();
     }
 
