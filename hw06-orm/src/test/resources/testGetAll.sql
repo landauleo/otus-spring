@@ -1,3 +1,9 @@
+insert into author (id, `name`)
+values (1, 'yoshimoto banana');
+
+insert into genre (id, `name`)
+values (1, 'poem');
+
 insert into book (`name`, genre_id, author_id)
 values ('kitchen', 1, 1);
 

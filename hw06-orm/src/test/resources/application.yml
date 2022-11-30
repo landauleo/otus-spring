@@ -6,7 +6,8 @@ spring:
   sql:
     init:
       mode: always
-      data-locations: data.sql
+#      schema-locations: schema.sql
+
   h2:
     console:
       path: /h2-console
@@ -14,10 +15,8 @@ spring:
         web-allow-others: true
 
   jpa:
-    generate-ddl: false
-    #generate-ddl: true
+    generate-ddl: true
     hibernate:
-      ddl-auto: none
-      #ddl-auto: create-drop
+      ddl-auto: update #в какой-то момент из-за Spring >2.7 пришлось включить это, так как игнорилась schema.sql
 
     show-sql: true

@@ -32,10 +32,10 @@ public class Book {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @ManyToOne(targetEntity = Genre.class, fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @ManyToOne(targetEntity = Genre.class, fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Genre genre;
 
-    @ManyToOne(targetEntity = Author.class, fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @ManyToOne(targetEntity = Author.class, fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Author author;
 
     public Book(String name, Genre genre, Author author) {

@@ -35,8 +35,8 @@ class BookDaoJpaTest {
     @Test
     @DisplayName("Сохраняет книгу")
     void testInsert() {
-        Genre genre = new Genre(1, "poem");
-        Author author = new Author(1, "yoshimoto banana");
+        Genre genre = new Genre("poem");
+        Author author = new Author("yoshimoto banana");
         Book book = new Book("sleeping", genre, author);
 
         int originalSize = bookDaoJpa.getAll().size();
@@ -54,8 +54,8 @@ class BookDaoJpaTest {
     @Test
     @DisplayName("Изменяет книгу")
     void testUpdate() {
-        Genre genre = new Genre(1, "poem");
-        Author author = new Author(1, "yoshimoto banana");
+        Genre genre = new Genre("poem");
+        Author author = new Author("yoshimoto banana");
         Book book = new Book("sleeping", genre, author);
 
         long bookId = bookDaoJpa.save(book);
@@ -75,8 +75,8 @@ class BookDaoJpaTest {
     @Test
     @DisplayName("Получает книгу по ID")
     void testGetById() {
-        Genre genre = new Genre(1, "poem");
-        Author author = new Author(1, "yoshimoto banana");
+        Genre genre = new Genre("poem");
+        Author author = new Author("yoshimoto banana");
         Book book = new Book("sleeping", genre, author);
         long bookId = bookDaoJpa.save(book);
         book.setId(bookId);
@@ -98,7 +98,9 @@ class BookDaoJpaTest {
 
     @Test
     @DisplayName("Удаляет книгу по ID")
-    @Sql(statements = "insert into book (id, `name`, genre_id, author_id) values (100, 'moon', 1, 1);")
+    @Sql(statements = {"INSERT INTO author (id, `NAME`) VALUES (1, 'yoshimoto banana');",
+            "INSERT INTO genre (id, `NAME`) VALUES (1, 'poem');",
+            "INSERT INTO book (id, `NAME`, genre_id, author_id) VALUES (100, 'moon', 1, 1);"})
     void testDeleteById() {
         Book book = bookDaoJpa.getById(100);
 

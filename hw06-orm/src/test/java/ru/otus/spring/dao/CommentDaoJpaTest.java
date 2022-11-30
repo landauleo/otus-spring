@@ -34,8 +34,8 @@ class CommentDaoJpaTest {
     @Test
     @DisplayName("Сохраняет комментарий")
     void testInsert() {
-        Genre genre = new Genre(1, "poem");
-        Author author = new Author(1, "yoshimoto banana");
+        Genre genre = new Genre( "poem");
+        Author author = new Author( "yoshimoto banana");
         Book book = new Book("sleeping", genre, author);
         Comment comment = new Comment( "filthy animals", book);
 
@@ -50,8 +50,8 @@ class CommentDaoJpaTest {
     @Test
     @DisplayName("Изменяет комментарий")
     void testUpdate() {
-        Genre genre = new Genre(1, "poem");
-        Author author = new Author(1, "yoshimoto banana");
+        Genre genre = new Genre("poem");
+        Author author = new Author("yoshimoto banana");
         Book book = new Book("sleeping", genre, author);
         Comment comment = new Comment("filthy animals", book);
 
@@ -71,11 +71,12 @@ class CommentDaoJpaTest {
     @Test
     @DisplayName("Получает комментарии по ID книги")
     void testGetById() {
-        Genre genre = new Genre(1, "poem");
-        Author author = new Author(1, "yoshimoto banana");
+        Genre genre = new Genre("poem");
+        Author author = new Author("yoshimoto banana");
         Book book = new Book("sleeping", genre, author);
         Comment negativeComment = new Comment(1, "I hate japanese literature", book);
         Comment positiveComment = new Comment(2, "I love japanese literature", book);
+
         long bookId = testEntityManager.persistAndFlush(book).getId();
         int originalSize = commentDaoJpa.getByBookId(bookId).size();
         commentDaoJpa.save(negativeComment);
@@ -90,10 +91,11 @@ class CommentDaoJpaTest {
     @Test
     @DisplayName("Удаляет комментарий по ID")
     void testDeleteById() {
-        Genre genre = new Genre(1, "poem");
-        Author author = new Author(1, "yoshimoto banana");
+        Genre genre = new Genre("poem");
+        Author author = new Author("yoshimoto banana");
         Book book = new Book("sleeping", genre, author);
         Comment comment = new Comment("filthy animals", book);
+
         testEntityManager.persistAndFlush(book);
         long id = testEntityManager.persistAndFlush(comment).getId();
         Comment foundComment = testEntityManager.find(Comment.class, id);
