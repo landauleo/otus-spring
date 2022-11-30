@@ -26,26 +26,22 @@ public class GenreDaoJpa implements GenreDao {
 
     @Override
     public Genre getById(long id) {
-        TypedQuery<Genre> query = em.createQuery("select id, name from Genre where id = :id", Genre.class).setParameter("id", id);
-        return query.getSingleResult();
+        return em.find(Genre.class, id);
     }
 
     @Override
     public Genre getByName(String name) {
-        TypedQuery<Genre> query = em.createQuery("select id, name from Genre where name = :name", Genre.class).setParameter("name", name);
-        return query.getSingleResult();
+       return em.createQuery("select g from Genre g where g.name = :name", Genre.class).setParameter("name", name).getSingleResult();
     }
 
     @Override
     public List<Genre> getAll() {
-        TypedQuery<Genre> query = em.createQuery("select id, name from Genre ", Genre.class);
-        return query.getResultList();
+        return em.createQuery("select g from Genre g", Genre.class).getResultList();
     }
 
     @Override
     public void deleteById(long id) {
-        TypedQuery<Genre> query = em.createQuery("delete from Genre where id = :id", Genre.class).setParameter("id", id);
-        query.executeUpdate();
+        em.remove(getById(id));
     }
 
 }

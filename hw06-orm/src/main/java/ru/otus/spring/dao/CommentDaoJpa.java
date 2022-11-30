@@ -3,7 +3,6 @@ package ru.otus.spring.dao;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import lombok.RequiredArgsConstructor;
@@ -44,11 +43,7 @@ public class CommentDaoJpa implements CommentDao {
 
     @Override
     public void deleteById(long id) {
-        Query query = em.createQuery("delete " +
-                "from Comment c " +
-                "where c.id = :id");
-        query.setParameter("id", id);
-        query.executeUpdate();
+        em.remove(getById(id));
     }
 
 }

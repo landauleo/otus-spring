@@ -2,7 +2,6 @@ package ru.otus.spring.dao;
 
 import java.util.List;
 import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -26,26 +25,22 @@ public class AuthorDaoJPA implements AuthorDao {
 
     @Override
     public Author getById(long id) {
-        TypedQuery<Author> query = em.createQuery("select id, name from Author where id = :id", Author.class).setParameter("id", id);
-        return query.getSingleResult();
+        return em.find(Author.class, id);
     }
 
     @Override
     public Author getByName(String name) {
-        TypedQuery<Author> query = em.createQuery("select id, name from Author where name = :name", Author.class).setParameter("name", name);
-        return query.getSingleResult();
+        return em.createQuery("select a from Author a where a.name = :name", Author.class).setParameter("name", name).getSingleResult();
     }
 
     @Override
     public List<Author> getAll() {
-        TypedQuery<Author> query = em.createQuery("select id, name from Author ", Author.class);
-        return query.getResultList();
+        return em.createQuery("select a from Author a", Author.class).getResultList();
     }
 
     @Override
     public void deleteById(long id) {
-        TypedQuery<Author> query = em.createQuery("delete from Author where id = :id", Author.class).setParameter("id", id);
-        query.executeUpdate();
+        em.remove(getById(id));
     }
 
 }
