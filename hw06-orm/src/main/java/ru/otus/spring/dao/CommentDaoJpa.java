@@ -1,13 +1,11 @@
 package ru.otus.spring.dao;
 
-import java.util.List;
-import java.util.Map;
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import ru.otus.spring.domain.Comment;
+
+import javax.persistence.EntityManager;
+import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
@@ -25,20 +23,16 @@ public class CommentDaoJpa implements CommentDao {
         }
     }
 
-    //https://www.bychkov.name/java-ee-tutorial/persistence-entitygraphs002.html - getEntityGraph VS. createEntityGraph
     @Override
     public Comment getById(long id) {
-        Map<String, Object> props = Map.of("javax.persistence.fetchgraph", em.getEntityGraph("comment-book-entity-graph"));
-        return em.find(Comment.class, id, props);
+        return em.find(Comment.class, id);
+
     }
 
     @Override
     public List<Comment> getByBookId(long bookId) {
-        TypedQuery<Comment> query = em.createQuery("select c from Comment c where c.book.id = :bookId", Comment.class)
-                .setParameter("bookId", bookId)
-                .setHint("javax.persistence.fetchgraph", em.getEntityGraph("comment-book-entity-graph"));
-
-        return query.getResultList();
+        return em.createQuery("select c from Comment c where c.book.id = :bookId", Comment.class)
+                .setParameter("bookId", bookId).getResultList();
     }
 
     @Override

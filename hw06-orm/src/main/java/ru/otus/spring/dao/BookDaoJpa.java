@@ -25,6 +25,7 @@ public class BookDaoJpa implements BookDao {
         }
     }
 
+    //https://www.bychkov.name/java-ee-tutorial/persistence-entitygraphs002.html - getEntityGraph VS. createEntityGraph
     @Override
     public Book getById(long id) {
         return em.find(Book.class, id, Map.of("javax.persistence.fetchgraph", em.getEntityGraph("book-author-genre-entity-graph")));
