@@ -2,7 +2,6 @@ package ru.otus.spring.dao;
 
 import java.util.Collections;
 import java.util.List;
-import javax.persistence.NoResultException;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,7 +19,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DataJpaTest
 @Import(BookDaoJpa.class)
@@ -40,11 +38,12 @@ class BookDaoJpaTest {
         Author author = new Author("yoshimoto banana");
         Book book = new Book("sleeping", genre, author);
 
+
         int originalSize = bookDaoJpa.getAll().size();
         assertEquals(0, originalSize);
         long bookId = bookDaoJpa.save(book);
         book.setId(bookId);
-        Book foundBook = bookDaoJpa.getById(bookId);
+        Book foundBook = testEntityManager.find(Book.class, bookId);
         int updatedSize = bookDaoJpa.getAll().size();
 
         assertNotEquals(originalSize, updatedSize);
@@ -60,14 +59,14 @@ class BookDaoJpaTest {
         Book book = new Book("sleeping", genre, author);
 
         long bookId = bookDaoJpa.save(book);
-        Book originalBookFromDb = bookDaoJpa.getById(bookId);
+        Book originalBookFromDb = testEntityManager.find(Book.class, bookId);
         Book updatedVersionOfBook = new Book(bookId, "tsugumi", genre, author);
 
         //если не детачить сущности после апдэйтов, то при следующем обращении к сущности вытянется её копия из кэша и она будет со СТАРЫМИ полями
         testEntityManager.detach(originalBookFromDb);
 
         bookDaoJpa.save(updatedVersionOfBook);
-        Book updatedBookFromDb = bookDaoJpa.getById(bookId);
+        Book updatedBookFromDb = testEntityManager.find(Book.class, bookId);
 
         assertEquals(updatedVersionOfBook, updatedBookFromDb);
         assertNotEquals(originalBookFromDb, updatedBookFromDb);
@@ -79,7 +78,7 @@ class BookDaoJpaTest {
         Genre genre = new Genre("poem");
         Author author = new Author("yoshimoto banana");
         Book book = new Book("sleeping", genre, author);
-        long bookId = bookDaoJpa.save(book);
+        long bookId = testEntityManager.persistAndFlush(book).getId();
         book.setId(bookId);
 
         Book bookFromDb = bookDaoJpa.getById(bookId);
@@ -103,10 +102,11 @@ class BookDaoJpaTest {
             "INSERT INTO genre (id, `NAME`) VALUES (1, 'poem');",
             "INSERT INTO book (id, `NAME`, genre_id, author_id) VALUES (100, 'moon', 1, 1);"})
     void testDeleteById() {
-        Book book = bookDaoJpa.getById(100);
+        long bookId = 100;
+        Book book = testEntityManager.find(Book.class, bookId);
 
         assertNotNull(book);
-        assertDoesNotThrow(() -> bookDaoJpa.deleteById(100));
-        assertNull(bookDaoJpa.getById(100));
+        assertDoesNotThrow(() -> bookDaoJpa.deleteById(bookId));
+        assertNull(testEntityManager.find(Book.class, bookId));
     }
 }

@@ -41,7 +41,7 @@ class CommentDaoJpaTest {
 
         testEntityManager.persistAndFlush(book);
         long commentId = commentDaoJpa.save(comment);
-        Comment commentFromDb = commentDaoJpa.getById(commentId);
+        Comment commentFromDb = testEntityManager.find(Comment.class, commentId);
 
         assertNotNull(commentFromDb);
         assertEquals(comment, commentFromDb);
@@ -57,12 +57,12 @@ class CommentDaoJpaTest {
 
         testEntityManager.persistAndFlush(book);
         long commentId = commentDaoJpa.save(comment);
-        Comment originalCommentFromDb = commentDaoJpa.getById(commentId);
+        Comment originalCommentFromDb = testEntityManager.find(Comment.class, commentId);
         testEntityManager.detach(originalCommentFromDb);
 
         Comment updatedVersionOfComment = new Comment(commentId, "fluffy animals", book);
         commentDaoJpa.save(updatedVersionOfComment);
-        Comment updatedCommentFromDb = commentDaoJpa.getById(commentId);
+        Comment updatedCommentFromDb = testEntityManager.find(Comment.class, commentId);
 
         assertEquals(comment, originalCommentFromDb);
         assertNotEquals(originalCommentFromDb, updatedCommentFromDb);
@@ -74,13 +74,13 @@ class CommentDaoJpaTest {
         Genre genre = new Genre("poem");
         Author author = new Author("yoshimoto banana");
         Book book = new Book("sleeping", genre, author);
-        Comment negativeComment = new Comment(1, "I hate japanese literature", book);
-        Comment positiveComment = new Comment(2, "I love japanese literature", book);
+        Comment negativeComment = new Comment("I hate japanese literature", book);
+        Comment positiveComment = new Comment("I love japanese literature", book);
 
         long bookId = testEntityManager.persistAndFlush(book).getId();
         int originalSize = commentDaoJpa.getByBookId(bookId).size();
-        commentDaoJpa.save(negativeComment);
-        commentDaoJpa.save(positiveComment);
+        testEntityManager.persistAndFlush(negativeComment);
+        testEntityManager.persistAndFlush(positiveComment);
 
         int updatedSize = commentDaoJpa.getByBookId(bookId).size();
 
