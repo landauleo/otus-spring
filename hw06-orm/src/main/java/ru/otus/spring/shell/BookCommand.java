@@ -21,15 +21,15 @@ public class BookCommand {
     public long insert(@ShellOption(defaultValue = "aku no hana") String bookName,
                        @ShellOption(defaultValue = "poetry") String genreName,
                        @ShellOption(defaultValue = "bodler") String authorName) {
-        return bookService.insert(bookName, genreName, authorName);
+        return bookService.save(0, bookName, genreName, authorName);
     }
 
     @ShellMethod(value = "Update a book", key = {"u", "update"})
     public void update(@ShellOption(defaultValue = "1") long id,
-                       @ShellOption(defaultValue = "aku no hana") String bookName,
+                       @ShellOption(defaultValue = "albatross") String bookName,
                        @ShellOption(defaultValue = "poetry") String genreName,
                        @ShellOption(defaultValue = "bodler") String authorName) {
-        bookService.update(id, bookName, genreName, authorName);
+        bookService.save(id, bookName, genreName, authorName);
     }
 
     @ShellMethod(value = "Get a book by id", key = {"g", "get"})

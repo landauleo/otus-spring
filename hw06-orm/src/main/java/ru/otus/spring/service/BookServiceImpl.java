@@ -19,11 +19,12 @@ public class BookServiceImpl implements BookService {
     private final AuthorService authorService;
 
     @Transactional
-    public long save(String bookName, String genreName, String authorName) {
+    public long save(long id, String bookName, String genreName, String authorName) {
         Genre genre = genreService.getByName(genreName);
         Author author = authorService.getByName(authorName);
 
-        Book book = new Book(bookName, genre, author);
+
+        Book book = new Book(id, bookName, genre, author);
         return bookDao.save(book);
     }
 
