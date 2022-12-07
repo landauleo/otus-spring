@@ -96,16 +96,18 @@ class CommentDaoJpaTest {
         Book book = new Book("sleeping", genre, author);
         Comment comment = new Comment("filthy animals", book);
 
-        testEntityManager.persistAndFlush(book);
-        long id = testEntityManager.persistAndFlush(comment).getId();
-        Comment foundComment = testEntityManager.find(Comment.class, id);
+        long bookId = testEntityManager.persistAndFlush(book).getId();
+        long commentId = testEntityManager.persistAndFlush(comment).getId();
+        Comment foundComment = testEntityManager.find(Comment.class, commentId);
         assertThat(foundComment).isNotNull();
         testEntityManager.detach(foundComment);
 
-        commentDaoJpa.deleteById(id);
-        Comment deletedComment = testEntityManager.find(Comment.class, id);
+        commentDaoJpa.deleteById(commentId);
+        Comment deletedComment = testEntityManager.find(Comment.class, commentId);
+        Book notDeletedBook = testEntityManager.find(Book.class, bookId);
 
         assertThat(deletedComment).isNull();
+        assertNotNull(notDeletedBook);
     }
 
 }
