@@ -23,7 +23,6 @@ public class BookServiceImpl implements BookService {
         Genre genre = genreService.getByName(genreName);
         Author author = authorService.getByName(authorName);
 
-
         Book book = new Book(id, bookName, genre, author);
         return bookDao.save(book);
     }

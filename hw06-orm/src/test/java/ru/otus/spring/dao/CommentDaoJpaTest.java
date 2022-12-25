@@ -1,5 +1,7 @@
 package ru.otus.spring.dao;
 
+import java.util.List;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.when;
 
 @DataJpaTest
 @Import(CommentDaoJpa.class)
@@ -34,17 +37,17 @@ class CommentDaoJpaTest {
     @Test
     @DisplayName("Сохраняет комментарий")
     void testInsert() {
-        Genre genre = new Genre( "poem");
-        Author author = new Author( "yoshimoto banana");
+        Genre genre = new Genre("poem");
+        Author author = new Author("yoshimoto banana");
         Book book = new Book("sleeping", genre, author);
-        Comment comment = new Comment( "filthy animals", book);
+        long bookId = testEntityManager.persistAndFlush(book).getId();
 
-        testEntityManager.persistAndFlush(book);
-        long commentId = commentDaoJpa.save(comment);
-        Comment commentFromDb = testEntityManager.find(Comment.class, commentId);
+        assertEquals(0, commentDaoJpa.getByBookId(bookId).size());
 
-        assertNotNull(commentFromDb);
-        assertEquals(comment, commentFromDb);
+        when(bookDaoJpa.getById(bookId)).thenReturn(book);
+        Comment comment = new Comment("filthy animals");
+        commentDaoJpa.save(comment, bookId);
+        assertEquals(1, commentDaoJpa.getByBookId(bookId).size());
     }
 
     @Test
@@ -52,16 +55,16 @@ class CommentDaoJpaTest {
     void testUpdate() {
         Genre genre = new Genre("poem");
         Author author = new Author("yoshimoto banana");
-        Book book = new Book("sleeping", genre, author);
-        Comment comment = new Comment("filthy animals", book);
+        Comment comment = new Comment("filthy animals");
+        Book book = new Book("sleeping", genre, author, List.of(comment));
 
         testEntityManager.persistAndFlush(book);
-        long commentId = commentDaoJpa.save(comment);
-        Comment originalCommentFromDb = testEntityManager.find(Comment.class, commentId);
+        long commentId = comment.getId();
+        Comment originalCommentFromDb = commentDaoJpa.getById(commentId);
         testEntityManager.detach(originalCommentFromDb);
 
-        Comment updatedVersionOfComment = new Comment(commentId, "fluffy animals", book);
-        commentDaoJpa.save(updatedVersionOfComment);
+        Comment updatedVersionOfComment = new Comment(commentId, "fluffy animals");
+        commentDaoJpa.save(updatedVersionOfComment, book.getId());
         Comment updatedCommentFromDb = testEntityManager.find(Comment.class, commentId);
 
         assertEquals(comment, originalCommentFromDb);
@@ -73,34 +76,30 @@ class CommentDaoJpaTest {
     void testGetById() {
         Genre genre = new Genre("poem");
         Author author = new Author("yoshimoto banana");
-        Book book = new Book("sleeping", genre, author);
-        Comment negativeComment = new Comment("I hate japanese literature", book);
-        Comment positiveComment = new Comment("I love japanese literature", book);
+        Comment negativeComment = new Comment("I hate japanese literature");
+        Comment positiveComment = new Comment("I love japanese literature");
+        Book book = new Book("sleeping", genre, author, List.of(positiveComment, negativeComment));
 
         long bookId = testEntityManager.persistAndFlush(book).getId();
         int originalSize = commentDaoJpa.getByBookId(bookId).size();
-        testEntityManager.persistAndFlush(negativeComment);
-        testEntityManager.persistAndFlush(positiveComment);
+        commentDaoJpa.getByBookId(bookId);
 
-        int updatedSize = commentDaoJpa.getByBookId(bookId).size();
-
-        assertNotEquals(originalSize, updatedSize);
+        assertNotEquals(0, originalSize);
+        assertEquals(2, originalSize);
     }
-
 
     @Test
     @DisplayName("Удаляет комментарий по ID")
     void testDeleteById() {
         Genre genre = new Genre("poem");
         Author author = new Author("yoshimoto banana");
-        Book book = new Book("sleeping", genre, author);
-        Comment comment = new Comment("filthy animals", book);
+        Comment comment = new Comment("filthy animals");
+        Book book = new Book("sleeping", genre, author, List.of(comment));
 
         long bookId = testEntityManager.persistAndFlush(book).getId();
-        long commentId = testEntityManager.persistAndFlush(comment).getId();
+        long commentId = comment.getId();
         Comment foundComment = testEntityManager.find(Comment.class, commentId);
         assertThat(foundComment).isNotNull();
-        testEntityManager.detach(foundComment);
 
         commentDaoJpa.deleteById(commentId);
         Comment deletedComment = testEntityManager.find(Comment.class, commentId);

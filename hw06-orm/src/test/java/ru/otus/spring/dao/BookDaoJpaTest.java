@@ -38,7 +38,6 @@ class BookDaoJpaTest {
         Author author = new Author("yoshimoto banana");
         Book book = new Book("sleeping", genre, author);
 
-
         int originalSize = bookDaoJpa.getAll().size();
         assertEquals(0, originalSize);
         long bookId = bookDaoJpa.save(book);

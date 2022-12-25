@@ -82,7 +82,6 @@ class BookServiceTest {
 
         assertNotEquals(Collections.emptyList(), actualBooks);
         assertEquals(expectedBooks, actualBooks);
-
     }
 
     @Test

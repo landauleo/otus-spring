@@ -5,7 +5,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.spring.dao.BookDao;
 import ru.otus.spring.dao.CommentDao;
 import ru.otus.spring.domain.Comment;
 
@@ -14,12 +13,11 @@ import ru.otus.spring.domain.Comment;
 public class CommentServiceImpl implements CommentService {
 
     private final CommentDao commentDao;
-    private final BookDao bookDao;
 
     @Transactional
     public long save(long bookId, String text) {
-        Comment comment = new Comment(text, bookDao.getById(bookId));
-        return commentDao.save(comment);
+        Comment comment = new Comment(text);
+        return commentDao.save(comment, bookId);
     }
 
     @Transactional(readOnly = true)

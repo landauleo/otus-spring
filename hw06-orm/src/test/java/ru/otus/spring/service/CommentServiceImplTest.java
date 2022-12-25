@@ -11,10 +11,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.otus.spring.dao.BookDao;
 import ru.otus.spring.dao.CommentDao;
-import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.Comment;
-import ru.otus.spring.domain.Genre;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -48,7 +46,7 @@ class CommentServiceImplTest {
         long commentId = 1L;
         long bookId = 2L;
         when(bookDao.getById(anyLong())).thenReturn(new Book());
-        when(commentDao.save(any())).thenReturn(commentId);
+        when(commentDao.save(any(), anyLong())).thenReturn(commentId);
         long savedCommentId = commentService.save(bookId, "blah-blah");
 
         assertEquals(commentId, savedCommentId);

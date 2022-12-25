@@ -5,6 +5,7 @@ import javax.persistence.EntityManager;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.Comment;
 
 @Repository
@@ -12,10 +13,17 @@ import ru.otus.spring.domain.Comment;
 public class CommentDaoJpa implements CommentDao {
 
     private final EntityManager em;
+    private final BookDao bookDao;
 
     @Override
-    public long save(Comment comment) {
+    public long save(Comment comment, long bookId) {
         if (comment.getId() <= 0) {
+            Book book = bookDao.getById(bookId);
+            if (book.getComments() == null) {
+                book.setComments(List.of(comment));
+            } else {
+                book.getComments().add(comment);
+            }
             em.persist(comment);
             return comment.getId();
         } else {
@@ -31,18 +39,8 @@ public class CommentDaoJpa implements CommentDao {
 
     @Override
     public List<Comment> getByBookId(long bookId) {
-        System.out.println(em.createQuery("select c from Comment c " +
-//                "left join fetch c.book " +
-//                "left join fetch c.book.genre " +
-//                "left join fetch c.book.author " +
-                " where c.book.id = :bookId", Comment.class)
-                .setParameter("bookId", bookId).getResultList().size());
-
-        return em.createQuery("select c from Comment c " +
-//                "left join fetch c.book " +
-//                "left join fetch c.book.genre " +
-//                "left join fetch c.book.author " +
-                " where c.book.id = :bookId", Comment.class)
+        return em.createQuery("select c.comments from Book c " +
+                " where c.id =: bookId ")
                 .setParameter("bookId", bookId).getResultList();
     }
 

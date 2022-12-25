@@ -39,20 +39,29 @@ public class Book {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @ManyToOne(targetEntity = Genre.class, fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @ManyToOne(targetEntity = Genre.class, fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "genre_id")
     @Fetch(FetchMode.JOIN)
     private Genre genre;
 
-    @ManyToOne(targetEntity = Author.class, fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @ManyToOne(targetEntity = Author.class, fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "author_id")
     @Fetch(FetchMode.JOIN)
     private Author author;
 
+    //внимательней с CascadeType!!
+    //обрати внимание, что нет mappedBy
     //атрибут необходим для создания двунаправленной связи, чтобы указать “владельца” отношения → без этой аннотации Hibernate считает, что у него просто 2 однонаправленные связи(!!!), а не 1 двунаправленная
-    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    @Fetch(FetchMode.SUBSELECT)// When accessing a non-initialized collection, this fetch mode will trigger loading all elements of all collections
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "book_id")
     private List<Comment> comments;
+
+    public Book(String name, Genre genre, Author author, List<Comment> comments) {
+        this.name = name;
+        this.genre = genre;
+        this.author = author;
+        this.comments = comments;
+    }
 
     public Book(long id, String name, Genre genre, Author author) {
         this.id = id;
