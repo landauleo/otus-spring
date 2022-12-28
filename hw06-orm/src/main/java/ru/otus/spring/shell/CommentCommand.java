@@ -20,7 +20,7 @@ public class CommentCommand {
     @ShellMethod(value = "Insert a new comment", key = {"ic", "insertcomment"})
     public long insert(@ShellOption(defaultValue = "1") long bookId,
                        @ShellOption(defaultValue = "that man was mad!!!") String text) {
-        return commentService.save(bookId, text);
+        return commentService.save(bookId, text).getId();
     }
 
     @ShellMethod(value = "Get a comment by id", key = {"gc", "getcomment"})

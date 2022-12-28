@@ -6,7 +6,7 @@ import ru.otus.spring.domain.Comment;
 
 public interface CommentDao {
 
-    long save(Comment comment, long bookId);
+    Comment save(Comment comment);
 
     Comment getById(long id);
 

@@ -5,6 +5,7 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -17,8 +18,9 @@ import ru.otus.spring.domain.Comment;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
@@ -43,13 +45,19 @@ class CommentServiceImplTest {
 
     @Test
     void save() {
-        long commentId = 1L;
+        Book mockBook = mock(Book.class);
         long bookId = 2L;
-        when(bookDao.getById(anyLong())).thenReturn(new Book());
-        when(commentDao.save(any(), anyLong())).thenReturn(commentId);
-        long savedCommentId = commentService.save(bookId, "blah-blah");
+        when(mockBook.getId()).thenReturn(bookId);
+        String text = "blah-blah";
+        when(bookDao.getById(bookId)).thenReturn(mockBook);
+        ArgumentCaptor<Comment> ac = ArgumentCaptor.forClass(Comment.class);
 
-        assertEquals(commentId, savedCommentId);
+        commentService.save(bookId, text);
+
+        verify(bookDao).getById(bookId);
+        verify(commentDao).save(ac.capture());
+        assertEquals(bookId, ac.getValue().getBook().getId());
+        assertEquals(text, ac.getValue().getText());
     }
 
     @Test

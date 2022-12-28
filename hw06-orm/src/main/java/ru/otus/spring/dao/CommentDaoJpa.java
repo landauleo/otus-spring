@@ -5,7 +5,6 @@ import javax.persistence.EntityManager;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.Comment;
 
 @Repository
@@ -13,34 +12,26 @@ import ru.otus.spring.domain.Comment;
 public class CommentDaoJpa implements CommentDao {
 
     private final EntityManager em;
-    private final BookDao bookDao;
 
     @Override
-    public long save(Comment comment, long bookId) {
+    public Comment save(Comment comment) {
         if (comment.getId() <= 0) {
-            Book book = bookDao.getById(bookId);
-            if (book.getComments() == null) {
-                book.setComments(List.of(comment));
-            } else {
-                book.getComments().add(comment);
-            }
             em.persist(comment);
-            return comment.getId();
+            return comment;
         } else {
-            return em.merge(comment).getId();
+            return em.merge(comment);
         }
     }
 
     @Override
     public Comment getById(long id) {
         return em.find(Comment.class, id);
-
     }
 
     @Override
     public List<Comment> getByBookId(long bookId) {
-        return em.createQuery("select c.comments from Book c " +
-                " where c.id =: bookId ")
+        return em.createQuery("select c from Comment c " +
+                "where c.book.id =: bookId ", Comment.class)
                 .setParameter("bookId", bookId).getResultList();
     }
 

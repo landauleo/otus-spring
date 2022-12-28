@@ -6,7 +6,7 @@ spring:
   sql:
     init:
       mode: always
-#      schema-locations: schema.sql
+      schema-locations: schema.sql
 
   h2:
     console:
