@@ -15,13 +15,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 @Getter
 @Setter
 @Entity
-@ToString
+@ToString(exclude = {"book"})
 @EqualsAndHashCode
 @NoArgsConstructor
 @Table(name = "comment")
@@ -36,7 +34,6 @@ public class Comment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id")//The name of the foreign key column
-    @Fetch(FetchMode.JOIN)
     private Book book;
 
     public Comment(String text, Book book) {

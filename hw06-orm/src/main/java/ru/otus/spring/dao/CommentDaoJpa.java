@@ -4,6 +4,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.stereotype.Repository;
 import ru.otus.spring.domain.Comment;
 
@@ -29,6 +30,7 @@ public class CommentDaoJpa implements CommentDao {
     }
 
     @Override
+    @EntityGraph(value = "book-author-genre-entity-graph")
     public List<Comment> getByBookId(long bookId) {
         return em.createQuery("select c from Comment c " +
                 "where c.book.id =: bookId ", Comment.class)

@@ -18,18 +18,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 @Getter
 @Setter
 @Entity
-@ToString
+@ToString(exclude = {"genre", "author"}) //чтобы такого не делать нужно юзать ДТО, но это уже другая история
 @NoArgsConstructor
 @EqualsAndHashCode
 @Table(name = "book")
 @NamedEntityGraph(name = "book-author-genre-entity-graph",
-        attributeNodes = {@NamedAttributeNode("genre"), @NamedAttributeNode("author")}) //всё делает дочерние сущности EAGER
+        attributeNodes = {@NamedAttributeNode("genre"), @NamedAttributeNode("author")})
 public class Book {
 
     @Id
@@ -39,14 +37,12 @@ public class Book {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @ManyToOne(targetEntity = Genre.class, fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "genre_id")
-    @Fetch(FetchMode.JOIN)
     private Genre genre;
 
-    @ManyToOne(targetEntity = Author.class, fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "author_id")
-    @Fetch(FetchMode.JOIN)
     private Author author;
 
     public Book(long id, String name, Genre genre, Author author) {
