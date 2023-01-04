@@ -21,6 +21,7 @@
         <module>hw03-springboot</module>
         <module>hw04-shell</module>
         <module>hw05-jdbc</module>
+        <module>hw06-orm</module>
     </modules>
 
 </project>
