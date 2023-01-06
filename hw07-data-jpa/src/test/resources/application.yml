@@ -1,0 +1,22 @@
+spring:
+  main:
+    allow-circular-references: true
+  datasource:
+    url: jdbc:h2:mem:testdb
+  sql:
+    init:
+      mode: always
+      schema-locations: schema.sql
+
+  h2:
+    console:
+      path: /h2-console
+      settings:
+        web-allow-others: true
+
+  jpa:
+    generate-ddl: true
+#    hibernate:
+#      ddl-auto: update #в какой-то момент из-за Spring >2.7 пришлось включить это, так как игнорилась schema.sql, но это не всегда у меня воспроизводится
+
+    show-sql: true
