@@ -16,7 +16,4 @@ spring:
 
   jpa:
     generate-ddl: true
-#    hibernate:
-#      ddl-auto: update #в какой-то момент из-за Spring >2.7 пришлось включить это, так как игнорилась schema.sql, но это не всегда у меня воспроизводится
-
     show-sql: true
