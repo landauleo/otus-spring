@@ -10,6 +10,10 @@ import ru.otus.spring.domain.Comment;
 @Repository
 public interface CommentDao extends JpaRepository<Comment, Long> {
 
+    //если хочется всё таки нативный запрос, то можно использовать JOIN FETCH
+    //JOIN VS. JOIN FETCH
+    //JOIN - returns all comments for the Hibernate
+    //JOIN FETCH - returns all comments AND all books associated
      List<Comment> findByBookId(@Param("bookId") long bookId);
 
 }
