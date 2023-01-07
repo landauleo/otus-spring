@@ -9,8 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedAttributeNode;
-import javax.persistence.NamedEntityGraph;
 import javax.persistence.Table;
 
 import lombok.EqualsAndHashCode;
@@ -26,8 +24,6 @@ import lombok.ToString;
 @NoArgsConstructor
 @EqualsAndHashCode
 @Table(name = "book")
-@NamedEntityGraph(name = "book-author-genre-entity-graph",
-        attributeNodes = {@NamedAttributeNode("genre"), @NamedAttributeNode("author")})
 public class Book {
 
     @Id
