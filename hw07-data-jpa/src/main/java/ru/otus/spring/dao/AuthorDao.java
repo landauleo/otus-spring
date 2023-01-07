@@ -7,6 +7,6 @@ import ru.otus.spring.domain.Author;
 @Repository
 public interface AuthorDao extends JpaRepository<Author, Long> {
 
-    Author getAuthorByName(String name);
+    Author findByName(String name);
 
 }

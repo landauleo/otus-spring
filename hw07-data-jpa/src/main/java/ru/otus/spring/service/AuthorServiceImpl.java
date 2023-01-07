@@ -14,7 +14,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Transactional(readOnly = true)
     public Author getByName(String name) {
-        return authorDao.getAuthorByName(name);
+        return authorDao.findByName(name);
     }
 
 }

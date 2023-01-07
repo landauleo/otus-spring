@@ -14,7 +14,7 @@ public class GenreServiceImpl implements GenreService {
 
     @Transactional(readOnly = true)
     public Genre getByName(String name) {
-        return genreDao.getGenreByName(name);
+        return genreDao.findByName(name);
     }
 
 }

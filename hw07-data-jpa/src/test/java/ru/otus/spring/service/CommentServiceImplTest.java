@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import ru.otus.spring.dao.BookDao;
 import ru.otus.spring.dao.CommentDao;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.Comment;
@@ -66,7 +65,7 @@ class CommentServiceImplTest {
     void getByBookId() {
         Comment comment = new Comment();
         long bookId = 2L;
-        when(commentDao.getByBookId(bookId)).thenReturn(List.of(comment));
+        when(commentDao.findByBookId(bookId)).thenReturn(List.of(comment));
 
         List<Comment> commentsByBookId = commentService.getByBookId(bookId);
 

@@ -40,12 +40,12 @@ class CommentDaoJpaTest {
         Book book = new Book("sleeping", genre, author);
         long bookId = testEntityManager.persistAndFlush(book).getId();
 
-        assertEquals(0, commentDao.getByBookId(bookId).size());
+        assertEquals(0, commentDao.findByBookId(bookId).size());
 
         when(bookDao.findById(bookId)).thenReturn(Optional.of(book));
         Comment comment = new Comment("filthy animals", book);
         commentDao.save(comment);
-        assertEquals(1, commentDao.getByBookId(bookId).size());
+        assertEquals(1, commentDao.findByBookId(bookId).size());
     }
 
     @Test
@@ -84,7 +84,7 @@ class CommentDaoJpaTest {
         testEntityManager.clear();
         testEntityManager.persistAndFlush(positiveComment);
         testEntityManager.clear();
-        int originalSize = commentDao.getByBookId(bookId).size();
+        int originalSize = commentDao.findByBookId(bookId).size();
 
         assertNotEquals(0, originalSize);
         assertEquals(2, originalSize);
