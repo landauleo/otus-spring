@@ -15,7 +15,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@JdbcTest
+@JdbcTest //https://otus.ru/nest/post/1579/ - подробности работы аннотации
 @Import(BookDaoJdbc.class)
 @DisplayName("Dao для работы с книгами")
 class BookDaoJdbcTest {

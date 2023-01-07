@@ -1,0 +1,19 @@
+spring:
+  main:
+    allow-circular-references: true
+  datasource:
+    url: jdbc:h2:mem:testdb
+  sql:
+    init:
+      mode: always
+      schema-locations: schema.sql
+
+  h2:
+    console:
+      path: /h2-console
+      settings:
+        web-allow-others: true
+
+  jpa:
+    generate-ddl: true
+    show-sql: true

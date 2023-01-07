@@ -1,0 +1,31 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:db
+    driverClassName: org.h2.Driver
+  sql:
+    init:
+      mode: always
+      data-locations: classpath:data.sql
+      schema-locations: classpath:schema.sql
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+
+    show-sql: true
+  #    properties:
+  #      hibernate:
+  #        enable_lazy_load_no_trans: true
+
+  h2:
+    console:
+      path: /h2-console
+      settings:
+        web-allow-others: true
+      enabled: true
+
+  shell:
+    interactive:
+#      enabled: false
+      enabled: true
