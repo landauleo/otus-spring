@@ -6,7 +6,7 @@ import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.spring.dao.BookDao;
+import ru.otus.spring.repository.BookRepository;
 import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.Genre;
@@ -15,7 +15,7 @@ import ru.otus.spring.domain.Genre;
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
 
-    private final BookDao bookDao;
+    private final BookRepository bookRepository;
     private final GenreService genreService;
     private final AuthorService authorService;
 
@@ -25,22 +25,22 @@ public class BookServiceImpl implements BookService {
         Author author = authorService.getByName(authorName);
 
         Book book = new Book(id, bookName, genre, author);
-        return bookDao.save(book).getId();
+        return bookRepository.save(book).getId();
     }
 
     @Transactional(readOnly = true)
     public Book getById(long id) {
-        return bookDao.findById(id).orElseThrow(() -> {throw new EntityNotFoundException("No book with id: " + id);});
+        return bookRepository.findById(id).orElseThrow(() -> {throw new EntityNotFoundException("No book with id: " + id);});
     }
 
     @Transactional(readOnly = true)
     public List<Book> getAll() {
-        return bookDao.findAll();
+        return bookRepository.findAll();
     }
 
     @Transactional
     public void deleteById(long id) {
-        bookDao.deleteById(id);
+        bookRepository.deleteById(id);
     }
 
 }

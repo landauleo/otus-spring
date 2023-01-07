@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import ru.otus.spring.dao.BookDao;
+import ru.otus.spring.repository.BookRepository;
 import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.Genre;
@@ -40,7 +40,7 @@ class BookServiceTest {
     private GenreServiceImpl genreService;
 
     @MockBean
-    private BookDao bookDao;
+    private BookRepository bookRepository;
 
     @Test
     @DisplayName("Сохраняет книгу")
@@ -49,7 +49,7 @@ class BookServiceTest {
         Book mockedBook = mock(Book.class);
         when(authorService.getByName(anyString())).thenReturn(new Author(1, "yoshimoto banana"));
         when(genreService.getByName(anyString())).thenReturn(new Genre(1, "poem"));
-        when(bookDao.save(any())).thenReturn(mockedBook);
+        when(bookRepository.save(any())).thenReturn(mockedBook);
         long actualId = bookService.save(mockedBookId, "moshi moshi", "poem", "yoshimoto banana");
 
         assertEquals(mockedBookId, actualId);
@@ -60,7 +60,7 @@ class BookServiceTest {
     void update() {
         when(authorService.getByName(anyString())).thenReturn(new Author(1, "yoshimoto banana"));
         when(genreService.getByName(anyString())).thenReturn(new Genre(1, "poem"));
-        when(bookDao.save(any())).thenReturn(mock(Book.class));
+        when(bookRepository.save(any())).thenReturn(mock(Book.class));
 
         assertDoesNotThrow(() -> bookService.save(0, "amrita", "poem", "yoshimoto banana"));
     }
@@ -69,7 +69,7 @@ class BookServiceTest {
     @DisplayName("Полоучает книгу по ID")
     void getById() {
         Book expectedBook = new Book(1L, "tsugumi", new Genre(1L, "poem"), new Author(1L, "yoshimoto banana"));
-        when(bookDao.findById(anyLong())).thenReturn(Optional.of(expectedBook));
+        when(bookRepository.findById(anyLong())).thenReturn(Optional.of(expectedBook));
 
         Book actualBook = bookService.getById(1L);
 
@@ -80,7 +80,7 @@ class BookServiceTest {
     @DisplayName("Получает все книги")
     void getAll() {
         List<Book> expectedBooks = List.of(new Book(1L, "tsugumi", new Genre(1L, "poem"), new Author(1L, "yoshimoto banana")));
-        when(bookDao.findAll()).thenReturn(expectedBooks);
+        when(bookRepository.findAll()).thenReturn(expectedBooks);
 
         List<Book> actualBooks = bookService.getAll();
 

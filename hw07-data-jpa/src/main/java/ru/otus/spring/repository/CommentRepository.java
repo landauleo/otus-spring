@@ -1,4 +1,4 @@
-package ru.otus.spring.dao;
+package ru.otus.spring.repository;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import ru.otus.spring.domain.Comment;
 
 @Repository
-public interface CommentDao extends JpaRepository<Comment, Long> {
+public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     //если хочется всё таки нативный запрос, то можно использовать JOIN FETCH
     //JOIN VS. JOIN FETCH

@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import ru.otus.spring.dao.CommentDao;
+import ru.otus.spring.repository.CommentRepository;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.Comment;
 
@@ -42,7 +42,7 @@ class CommentServiceImplTest {
     private GenreServiceImpl genreService;
 
     @MockBean
-    private CommentDao commentDao;
+    private CommentRepository commentRepository;
 
     @Test
     void save() {
@@ -56,7 +56,7 @@ class CommentServiceImplTest {
         commentService.save(bookId, text);
 
         verify(bookService).getById(bookId);
-        verify(commentDao).save(ac.capture());
+        verify(commentRepository).save(ac.capture());
         assertEquals(bookId, ac.getValue().getBook().getId());
         assertEquals(text, ac.getValue().getText());
     }
@@ -65,7 +65,7 @@ class CommentServiceImplTest {
     void getByBookId() {
         Comment comment = new Comment();
         long bookId = 2L;
-        when(commentDao.findByBookId(bookId)).thenReturn(List.of(comment));
+        when(commentRepository.findByBookId(bookId)).thenReturn(List.of(comment));
 
         List<Comment> commentsByBookId = commentService.getByBookId(bookId);
 
@@ -75,7 +75,7 @@ class CommentServiceImplTest {
     @Test
     void getById() {
         Comment actualComment = new Comment();
-        when(commentDao.findById(anyLong())).thenReturn(Optional.of(actualComment));
+        when(commentRepository.findById(anyLong())).thenReturn(Optional.of(actualComment));
 
         Comment expectedComment = commentService.getById(1L);
 

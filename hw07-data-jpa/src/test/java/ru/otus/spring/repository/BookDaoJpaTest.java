@@ -1,4 +1,4 @@
-package ru.otus.spring.dao;
+package ru.otus.spring.repository;
 
 import java.util.Collections;
 import java.util.List;
@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
 import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
@@ -25,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class BookDaoJpaTest {
 
     @Autowired
-    private BookDao bookDao;
+    private BookRepository bookRepository;
 
     @Autowired
     private TestEntityManager testEntityManager;
@@ -37,12 +36,12 @@ class BookDaoJpaTest {
         Author author = new Author("yoshimoto banana");
         Book book = new Book("sleeping", genre, author);
 
-        int originalSize = bookDao.findAll().size();
+        int originalSize = bookRepository.findAll().size();
         assertEquals(0, originalSize);
-        long bookId = bookDao.save(book).getId();
+        long bookId = bookRepository.save(book).getId();
         book.setId(bookId);
         Book foundBook = testEntityManager.find(Book.class, bookId);
-        int updatedSize = bookDao.findAll().size();
+        int updatedSize = bookRepository.findAll().size();
 
         assertNotEquals(originalSize, updatedSize);
         assertEquals(1, updatedSize);
@@ -56,14 +55,14 @@ class BookDaoJpaTest {
         Author author = new Author("yoshimoto banana");
         Book book = new Book("sleeping", genre, author);
 
-        long bookId = bookDao.save(book).getId();
+        long bookId = bookRepository.save(book).getId();
         Book originalBookFromDb = testEntityManager.find(Book.class, bookId);
         Book updatedVersionOfBook = new Book(bookId, "tsugumi", genre, author);
 
         //если не детачить сущности после апдэйтов, то при следующем обращении к сущности вытянется её копия из кэша и она будет со СТАРЫМИ полями
         testEntityManager.detach(originalBookFromDb);
 
-        bookDao.save(updatedVersionOfBook);
+        bookRepository.save(updatedVersionOfBook);
         Book updatedBookFromDb = testEntityManager.find(Book.class, bookId);
 
         assertEquals(updatedVersionOfBook, updatedBookFromDb);
@@ -79,7 +78,7 @@ class BookDaoJpaTest {
         long bookId = testEntityManager.persistAndFlush(book).getId();
         book.setId(bookId);
 
-        Book bookFromDb = bookDao.getById(bookId);
+        Book bookFromDb = bookRepository.getById(bookId);
 
         assertEquals(book, bookFromDb);
     }
@@ -88,7 +87,7 @@ class BookDaoJpaTest {
     @Sql(scripts = {"/testGetAll.sql"})
     @DisplayName("Получает все книги")
     void testGetAll() {
-        List<Book> books = bookDao.findAll();
+        List<Book> books = bookRepository.findAll();
 
         assertNotEquals(Collections.emptyList(), books);
         assertEquals(5, books.size());
@@ -104,7 +103,7 @@ class BookDaoJpaTest {
         Book book = testEntityManager.find(Book.class, bookId);
 
         assertNotNull(book);
-        assertDoesNotThrow(() -> bookDao.deleteById(bookId));
+        assertDoesNotThrow(() -> bookRepository.deleteById(bookId));
         assertNull(testEntityManager.find(Book.class, bookId));
     }
 }

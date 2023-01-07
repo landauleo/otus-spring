@@ -1,4 +1,4 @@
-package ru.otus.spring.dao;
+package ru.otus.spring.repository;
 
 import java.util.Optional;
 
@@ -24,10 +24,10 @@ import static org.mockito.Mockito.when;
 class CommentDaoJpaTest {
 
     @Autowired
-    private CommentDao commentDao;
+    private CommentRepository commentRepository;
 
     @MockBean
-    private BookDao bookDao;
+    private BookRepository bookRepository;
 
     @Autowired
     private TestEntityManager testEntityManager;
@@ -40,12 +40,12 @@ class CommentDaoJpaTest {
         Book book = new Book("sleeping", genre, author);
         long bookId = testEntityManager.persistAndFlush(book).getId();
 
-        assertEquals(0, commentDao.findByBookId(bookId).size());
+        assertEquals(0, commentRepository.findByBookId(bookId).size());
 
-        when(bookDao.findById(bookId)).thenReturn(Optional.of(book));
+        when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
         Comment comment = new Comment("filthy animals", book);
-        commentDao.save(comment);
-        assertEquals(1, commentDao.findByBookId(bookId).size());
+        commentRepository.save(comment);
+        assertEquals(1, commentRepository.findByBookId(bookId).size());
     }
 
     @Test
@@ -59,11 +59,11 @@ class CommentDaoJpaTest {
         testEntityManager.persistAndFlush(book);
         testEntityManager.persistAndFlush(comment);
         long commentId = comment.getId();
-        Comment originalCommentFromDb = commentDao.getById(commentId);
+        Comment originalCommentFromDb = commentRepository.getById(commentId);
         testEntityManager.detach(originalCommentFromDb);
 
         Comment updatedVersionOfComment = new Comment(commentId, "fluffy animals");
-        commentDao.save(updatedVersionOfComment);
+        commentRepository.save(updatedVersionOfComment);
         Comment updatedCommentFromDb = testEntityManager.find(Comment.class, commentId);
 
         assertEquals(comment, originalCommentFromDb);
@@ -84,7 +84,7 @@ class CommentDaoJpaTest {
         testEntityManager.clear();
         testEntityManager.persistAndFlush(positiveComment);
         testEntityManager.clear();
-        int originalSize = commentDao.findByBookId(bookId).size();
+        int originalSize = commentRepository.findByBookId(bookId).size();
 
         assertNotEquals(0, originalSize);
         assertEquals(2, originalSize);
@@ -104,7 +104,7 @@ class CommentDaoJpaTest {
         Comment foundComment = testEntityManager.find(Comment.class, commentId);
         assertThat(foundComment).isNotNull();
 
-        commentDao.deleteById(commentId);
+        commentRepository.deleteById(commentId);
         testEntityManager.flush();
         Comment deletedComment = testEntityManager.find(Comment.class, commentId);
         Book notDeletedBook = testEntityManager.find(Book.class, bookId);
