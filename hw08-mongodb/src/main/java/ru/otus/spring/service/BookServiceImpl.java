@@ -1,5 +1,7 @@
 package ru.otus.spring.service;
 
+import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -8,8 +10,6 @@ import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.Genre;
 import ru.otus.spring.repository.BookRepository;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +30,9 @@ public class BookServiceImpl implements BookService {
 
     @Transactional(readOnly = true)
     public Book getById(long id) {
-        return bookRepository.findById(id).orElseThrow(() -> {throw new EmptyResultDataAccessException("No book with id: " + id, 1);});
+        return bookRepository.findById(id).orElseThrow(() -> {
+            throw new EmptyResultDataAccessException("No book with id: " + id, 1);
+        });
     }
 
     @Transactional(readOnly = true)
