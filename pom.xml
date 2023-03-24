@@ -23,7 +23,6 @@
         <module>hw05-jdbc</module>
         <module>hw06-orm</module>
         <module>hw07-data-jpa</module>
-        <module>hw08-mongodb</module>
     </modules>
 
 </project>
