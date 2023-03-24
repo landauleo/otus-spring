@@ -4,7 +4,7 @@ spring:
       # сам spring-boot-starter-data-mongodb тащит версию 4.6.1,
       # но mac на М1 не переваривает её и бросает ошибку:
       # osx distribution not supported: GenericFeatureAwareVersion{4.6.1}:Platform{operatingSystem=OS_X, architecture=ARM_64},
-      # с версией нижк всё работает
+      # с версией ниже всё работает
       version: 4.0.2
   main:
     allow-circular-references: true
