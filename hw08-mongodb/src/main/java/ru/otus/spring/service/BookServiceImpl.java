@@ -23,8 +23,14 @@ public class BookServiceImpl implements BookService {
     public long save(long id, String bookName, String genreName, String authorName) {
         Genre genre = genreService.getByName(genreName);
         Author author = authorService.getByName(authorName);
-
         Book book = new Book(id, bookName, genre, author);
+
+        //так неудобно, потому что в документах mongodb нет автоинкремента для Id типа long
+        if (id == 0) {
+            Book topByOrderByIdDesc = bookRepository.findTopByOrderByIdDesc();
+            book = topByOrderByIdDesc == null ? new Book(bookName, genre, author) : new Book(topByOrderByIdDesc.getId() + 1, bookName, genre, author);
+        }
+
         return bookRepository.save(book).getId();
     }
 

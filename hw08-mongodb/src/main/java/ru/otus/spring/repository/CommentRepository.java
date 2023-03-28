@@ -14,4 +14,6 @@ public interface CommentRepository extends MongoRepository<Comment, Long> {
 
     Comment getById(Long id);
 
+    Comment findTopByOrderByIdDesc();
+
 }

@@ -13,4 +13,6 @@ public interface BookRepository extends MongoRepository<Book, Long> {
 
     Book getById(Long id);
 
+    Book findTopByOrderByIdDesc();
+
 }
