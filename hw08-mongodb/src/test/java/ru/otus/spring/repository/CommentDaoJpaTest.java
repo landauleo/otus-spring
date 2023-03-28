@@ -15,6 +15,7 @@ import ru.otus.spring.domain.Comment;
 import ru.otus.spring.domain.Genre;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -46,6 +47,26 @@ class CommentDaoJpaTest {
         Comment comment = new Comment("filthy animals", book);
         commentRepository.save(comment);
         assertEquals(1, commentRepository.findByBookId(bookId).size());
+    }
+
+    @Test
+    @DisplayName("Сохраняет много комментариев")
+    void testInsertMultiple() {
+        Genre genre = new Genre("poem");
+        Author author = new Author("yoshimoto banana");
+        Book book = new Book("sleeping", genre, author);
+        when(bookRepository.save(book)).thenReturn(book);
+        long bookId = bookRepository.save(book).getId();
+        when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
+
+        assertEquals(0, commentRepository.findByBookId(bookId).size());
+
+        Comment firstComment = new Comment(1, "filthy animals", book);
+        Comment secondComment = new Comment(2, "fluffy animals", book);
+        assertDoesNotThrow(() -> commentRepository.save(firstComment));
+        assertDoesNotThrow(() -> commentRepository.save(secondComment));
+
+        assertEquals(2, commentRepository.findByBookId(bookId).size());
     }
 
     @Test

@@ -46,6 +46,23 @@ class BookDaoMongoTest {
     }
 
     @Test
+    @DisplayName("Сохраняет несколько книг")
+    void testInsertMultiple() {
+        Genre genre = new Genre("poem");
+        Author author = new Author("yoshimoto banana");
+        Book firstBook = new Book(1, "sleeping", genre, author);
+        Book secondBook = new Book(2, "amrita", genre, author);
+
+        int originalSize = bookRepository.findAll().size();
+        bookRepository.save(firstBook);
+        bookRepository.save(secondBook);
+        int updatedSize = bookRepository.findAll().size();
+
+        assertEquals(0, originalSize);
+        assertEquals(2, updatedSize);
+    }
+
+    @Test
     @DisplayName("Изменяет книгу")
     void testUpdate() {
         Genre genre = new Genre("poem");
