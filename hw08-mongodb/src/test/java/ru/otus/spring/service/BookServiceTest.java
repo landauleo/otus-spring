@@ -11,10 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import ru.otus.spring.repository.BookRepository;
 import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.Genre;
+import ru.otus.spring.repository.BookRepository;
+import ru.otus.spring.repository.CommentRepository;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,6 +24,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
@@ -41,6 +43,9 @@ class BookServiceTest {
 
     @MockBean
     private BookRepository bookRepository;
+
+    @MockBean
+    private CommentRepository commentRepository;
 
     @Test
     @DisplayName("Сохраняет книгу")
@@ -91,7 +96,14 @@ class BookServiceTest {
     @Test
     @DisplayName("Удаляет книгу по ID")
     void deleteById() {
-        assertDoesNotThrow(() -> bookService.deleteById(1));
+        long bookId = 1;
+        Book expectedBook = new Book(bookId, "tsugumi", new Genre(1L, "poem"), new Author(1L, "yoshimoto banana"));
+        when(bookRepository.findById(anyLong())).thenReturn(Optional.of(expectedBook));
+
+        assertDoesNotThrow(() -> bookService.deleteById(bookId));
+
+        verify(bookRepository).deleteById(bookId);
+        verify(commentRepository).deleteAllByBook(expectedBook);
     }
 
 }

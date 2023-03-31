@@ -10,12 +10,14 @@ import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.Genre;
 import ru.otus.spring.repository.BookRepository;
+import ru.otus.spring.repository.CommentRepository;
 
 @Service
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
+    private final CommentRepository commentRepository;
     private final GenreService genreService;
     private final AuthorService authorService;
 
@@ -48,7 +50,9 @@ public class BookServiceImpl implements BookService {
 
     @Transactional
     public void deleteById(long id) {
+        Book book = getById(id);
         bookRepository.deleteById(id);
+        commentRepository.deleteAllByBook(book);
     }
 
 }

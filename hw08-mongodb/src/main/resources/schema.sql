@@ -1,7 +1,3 @@
-DROP TABLE IF EXISTS author;
-DROP TABLE IF EXISTS genre;
-DROP TABLE IF EXISTS book;
-
 CREATE TABLE author
 (
     id   bigserial NOT NULL PRIMARY KEY,
@@ -26,5 +22,6 @@ CREATE TABLE comment
 (
     id      bigserial NOT NULL PRIMARY KEY,
     text    varchar(255),
-    book_id bigint REFERENCES book on delete cascade
+--     on delete cascade DOESN'T WORK
+    book_id bigint REFERENCES book
 );
