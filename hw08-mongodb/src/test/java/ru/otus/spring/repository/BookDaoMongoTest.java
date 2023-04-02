@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,7 @@ class BookDaoMongoTest {
 
         int originalSize = bookRepository.findAll().size();
         assertEquals(0, originalSize);
-        long bookId = bookRepository.save(book).getId();
+        ObjectId bookId = bookRepository.save(book).getId();
         book.setId(bookId);
         Book foundBook = bookRepository.findById(bookId).get();
         int updatedSize = bookRepository.findAll().size();
@@ -50,8 +51,8 @@ class BookDaoMongoTest {
     void testInsertMultiple() {
         Genre genre = new Genre("poem");
         Author author = new Author("yoshimoto banana");
-        Book firstBook = new Book(1, "sleeping", genre, author);
-        Book secondBook = new Book(2, "amrita", genre, author);
+        Book firstBook = new Book("sleeping", genre, author);
+        Book secondBook = new Book("amrita", genre, author);
 
         int originalSize = bookRepository.findAll().size();
         bookRepository.save(firstBook);
@@ -67,7 +68,7 @@ class BookDaoMongoTest {
     void testUpdate() {
         Genre genre = new Genre("poem");
         Author author = new Author("yoshimoto banana");
-        long bookId = 1;
+        ObjectId bookId = new ObjectId();
         Book book = new Book(bookId, "sleeping", genre, author);
 
         bookRepository.save(book);
@@ -88,7 +89,7 @@ class BookDaoMongoTest {
         Genre genre = new Genre("poem");
         Author author = new Author("yoshimoto banana");
         Book book = new Book("sleeping", genre, author);
-        long bookId = bookRepository.save(book).getId();
+        ObjectId bookId = bookRepository.save(book).getId();
         book.setId(bookId);
 
         Book bookFromDb = bookRepository.getById(bookId);
@@ -103,11 +104,11 @@ class BookDaoMongoTest {
         Genre genre = new Genre("poem");
         Author author = new Author("yoshimoto banana");
         bookRepository.insert(List.of(
-                new Book(1, "kitchen", genre, author),
-                new Book(2, "harboiled/hardluck", genre, author),
-                new Book(3, "moshi moshi", genre, author),
-                new Book(4, "amrita", genre, author),
-                new Book(5, "honeymoon", genre, author)));
+                new Book("kitchen", genre, author),
+                new Book("harboiled/hardluck", genre, author),
+                new Book("moshi moshi", genre, author),
+                new Book("amrita", genre, author),
+                new Book("honeymoon", genre, author)));
         List<Book> books = bookRepository.findAll();
 
         assertNotEquals(Collections.emptyList(), books);
@@ -117,7 +118,7 @@ class BookDaoMongoTest {
     @Test
     @DisplayName("Удаляет книгу по ID")
     void testDeleteById() {
-        long bookId = 100;
+        ObjectId bookId = new ObjectId();
         Genre genre = new Genre("poem");
         Author author = new Author("yoshimoto banana");
         Book book = bookRepository.save(new Book(bookId, "sleeping", genre, author));

@@ -1,6 +1,11 @@
 package ru.otus.spring.domain;
 
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -13,13 +18,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Comment {
 
     @Id
-    private long id;
+    private ObjectId id;
 
     private String text;
 
     private Book book;
 
-    public Comment(long id, String text, Book book) {
+    public Comment(ObjectId id, String text, Book book) {
         this.id = id;
         this.text = text;
         this.book = book;
@@ -30,7 +35,7 @@ public class Comment {
         this.book = book;
     }
 
-    public Comment(long id, String text) {
+    public Comment(ObjectId id, String text) {
         this.id = id;
         this.text = text;
     }

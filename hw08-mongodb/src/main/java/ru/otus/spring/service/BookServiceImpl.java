@@ -1,13 +1,17 @@
 package ru.otus.spring.service;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
+import ru.otus.spring.domain.Comment;
 import ru.otus.spring.domain.Genre;
 import ru.otus.spring.repository.BookRepository;
 import ru.otus.spring.repository.CommentRepository;
@@ -22,22 +26,22 @@ public class BookServiceImpl implements BookService {
     private final AuthorService authorService;
 
     @Transactional
-    public long save(long id, String bookName, String genreName, String authorName) {
+    public ObjectId save(ObjectId id, String bookName, String genreName, String authorName) {
         Genre genre = genreService.getByName(genreName);
         Author author = authorService.getByName(authorName);
-        Book book = new Book(id, bookName, genre, author);
+        Book book = id == null ? new Book(bookName, genre, author) : new Book(id, bookName, genre, author);
 
-        //так неудобно, потому что в документах mongodb нет автоинкремента для Id типа long
-        if (id == 0) {
-            Book topByOrderByIdDesc = bookRepository.findTopByOrderByIdDesc();
-            book = topByOrderByIdDesc == null ? new Book(bookName, genre, author) : new Book(topByOrderByIdDesc.getId() + 1, bookName, genre, author);
+        ObjectId bookId = bookRepository.save(book).getId();
+        for (Comment comment : commentRepository.findByBookId(id)) {
+            comment.setBook(book);
+            commentRepository.save(comment);
         }
 
-        return bookRepository.save(book).getId();
+        return bookId;
     }
 
     @Transactional(readOnly = true)
-    public Book getById(long id) {
+    public Book getById(ObjectId id) {
         return bookRepository.findById(id).orElseThrow(() -> {
             throw new EmptyResultDataAccessException("No book with id: " + id, 1);
         });
@@ -49,7 +53,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Transactional
-    public void deleteById(long id) {
+    public void deleteById(ObjectId id) {
         Book book = getById(id);
         bookRepository.deleteById(id);
         commentRepository.deleteAllByBook(book);

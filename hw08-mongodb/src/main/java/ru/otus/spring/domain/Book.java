@@ -1,7 +1,12 @@
 package ru.otus.spring.domain;
 
 
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -14,7 +19,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Book {
 
     @Id
-    private long id;
+    private ObjectId id;
 
     private String name;
 
@@ -22,7 +27,7 @@ public class Book {
 
     private Author author;
 
-    public Book(long id, String name, Genre genre, Author author) {
+    public Book(ObjectId id, String name, Genre genre, Author author) {
         this.id = id;
         this.name = name;
         this.genre = genre;

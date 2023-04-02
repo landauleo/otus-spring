@@ -3,6 +3,7 @@ package ru.otus.spring.repository;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,7 @@ class CommentDaoJpaTest {
         Author author = new Author("yoshimoto banana");
         Book book = new Book("sleeping", genre, author);
         when(bookRepository.save(book)).thenReturn(book);
-        long bookId = bookRepository.save(book).getId();
+        ObjectId bookId = bookRepository.save(book).getId();
         when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
 
         assertEquals(0, commentRepository.findByBookId(bookId).size());
@@ -56,13 +57,13 @@ class CommentDaoJpaTest {
         Author author = new Author("yoshimoto banana");
         Book book = new Book("sleeping", genre, author);
         when(bookRepository.save(book)).thenReturn(book);
-        long bookId = bookRepository.save(book).getId();
+        ObjectId bookId = bookRepository.save(book).getId();
         when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
 
         assertEquals(0, commentRepository.findByBookId(bookId).size());
 
-        Comment firstComment = new Comment(1, "filthy animals", book);
-        Comment secondComment = new Comment(2, "fluffy animals", book);
+        Comment firstComment = new Comment("filthy animals", book);
+        Comment secondComment = new Comment("fluffy animals", book);
         assertDoesNotThrow(() -> commentRepository.save(firstComment));
         assertDoesNotThrow(() -> commentRepository.save(secondComment));
 
@@ -75,7 +76,7 @@ class CommentDaoJpaTest {
         Genre genre = new Genre("poem");
         Author author = new Author("yoshimoto banana");
         Book book = new Book("sleeping", genre, author);
-        long commentId = 1;
+        ObjectId commentId = new ObjectId();
         Comment comment = new Comment(commentId, "filthy animals", book);
 
         bookRepository.save(book);
@@ -96,11 +97,11 @@ class CommentDaoJpaTest {
         Genre genre = new Genre("poem");
         Author author = new Author("yoshimoto banana");
         Book book = new Book("sleeping", genre, author);
-        Comment negativeComment = new Comment(1, "I hate japanese literature", book);
-        Comment positiveComment = new Comment(2, "I love japanese literature", book);
+        Comment negativeComment = new Comment("I hate japanese literature", book);
+        Comment positiveComment = new Comment("I love japanese literature", book);
         when(bookRepository.save(book)).thenReturn(book);
 
-        long bookId = bookRepository.save(book).getId();
+        ObjectId bookId = bookRepository.save(book).getId();
         commentRepository.save(negativeComment);
         commentRepository.save(positiveComment);
         int originalSize = commentRepository.findByBookId(bookId).size();
@@ -116,7 +117,7 @@ class CommentDaoJpaTest {
         Author author = new Author("yoshimoto banana");
         Book book = new Book("sleeping", genre, author);
         Comment comment = new Comment("filthy animals", book);
-        long commentId = commentRepository.save(comment).getId();
+        ObjectId commentId = commentRepository.save(comment).getId();
         Comment foundComment = commentRepository.findById(commentId).get();
 
         commentRepository.deleteById(commentId);

@@ -3,6 +3,7 @@ package ru.otus.spring.service;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,32 +19,27 @@ public class CommentServiceImpl implements CommentService {
     private final BookService bookService;
 
     @Transactional
-    public Comment save(long id, long bookId, String text) {
+    public Comment save(ObjectId id, ObjectId bookId, String text) {
         Book book = bookService.getById(bookId);
-        Comment comment = new Comment(id, text, book);
-
-        if (id == 0) {
-            Comment topByOrderByIdDesc = commentRepository.findTopByOrderByIdDesc();
-            comment = topByOrderByIdDesc == null ? new Comment(text, book) : new Comment(topByOrderByIdDesc.getId() + 1, text, book);
-        }
+        Comment comment = id == null ? new Comment(text, book) : new Comment(id, text, book);
 
         return commentRepository.save(comment);
     }
 
     @Transactional(readOnly = true)
-    public List<Comment> getByBookId(long bookId) {
+    public List<Comment> getByBookId(ObjectId bookId) {
         return commentRepository.findByBookId(bookId);
     }
 
     @Transactional(readOnly = true)
-    public Comment getById(long id) {
+    public Comment getById(ObjectId id) {
         return commentRepository.findById(id).orElseThrow(() -> {
             throw new EmptyResultDataAccessException("No comment with id: " + id, 1);
         });
     }
 
     @Transactional
-    public void deleteById(long id) {
+    public void deleteById(ObjectId id) {
         commentRepository.deleteById(id);
     }
 
