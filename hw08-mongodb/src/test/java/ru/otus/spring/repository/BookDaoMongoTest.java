@@ -92,7 +92,7 @@ class BookDaoMongoTest {
         ObjectId bookId = bookRepository.save(book).getId();
         book.setId(bookId);
 
-        Book bookFromDb = bookRepository.getById(bookId);
+        Book bookFromDb = bookRepository.findById(bookId).get();
 
         assertEquals(book, bookFromDb);
     }

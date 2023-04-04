@@ -1,6 +1,7 @@
 package ru.otus.spring.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.spring.repository.AuthorRepository;
@@ -14,7 +15,9 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Transactional(readOnly = true)
     public Author getByName(String name) {
-        return authorRepository.findByName(name);
+        return authorRepository.findByName(name).orElseThrow(() -> {
+            throw new EmptyResultDataAccessException("No author with name: " + name, 1);
+        });
     }
 
 }

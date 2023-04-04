@@ -81,7 +81,7 @@ class CommentDaoJpaTest {
 
         bookRepository.save(book);
         commentRepository.save(comment);
-        Comment originalCommentFromDb = commentRepository.getById(commentId);
+        Comment originalCommentFromDb = commentRepository.findById(commentId).get();
 
         Comment updatedVersionOfComment = new Comment(commentId, "fluffy animals");
         commentRepository.save(updatedVersionOfComment);
