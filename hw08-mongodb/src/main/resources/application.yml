@@ -16,10 +16,6 @@ de:
     mongodb:
       embedded:
         version: 4.0.2
-    init:
-      mode: always
-      data-locations: classpath:data.sql
-      schema-locations: classpath:schema.sql
 
   shell:
     interactive:
