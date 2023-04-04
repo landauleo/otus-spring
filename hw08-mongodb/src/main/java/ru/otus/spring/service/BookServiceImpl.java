@@ -54,9 +54,8 @@ public class BookServiceImpl implements BookService {
 
     @Transactional
     public void deleteById(ObjectId id) {
-        Book book = getById(id);
         bookRepository.deleteById(id);
-        commentRepository.deleteAllByBook(book);
+        commentRepository.deleteAllByBookId(id);
     }
 
 }

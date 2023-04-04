@@ -105,7 +105,7 @@ class BookServiceTest {
         assertDoesNotThrow(() -> bookService.deleteById(bookId));
 
         verify(bookRepository).deleteById(bookId);
-        verify(commentRepository).deleteAllByBook(expectedBook);
+        verify(commentRepository).deleteAllByBookId(bookId);
     }
 
 }
