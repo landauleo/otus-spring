@@ -39,7 +39,7 @@ class BookServiceAndRepositoryTest {
     private CommentRepository commentRepository;
 
     @Autowired
-    CommentServiceImpl commentService;
+    private CommentServiceImpl commentService;
 
     @MockBean
     private AuthorServiceImpl authorService;

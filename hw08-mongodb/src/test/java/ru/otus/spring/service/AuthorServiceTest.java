@@ -22,10 +22,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class AuthorServiceTest {
 
     @Autowired
-    AuthorServiceImpl authorServiceImpl;
+    private AuthorServiceImpl authorServiceImpl;
 
     @Autowired
-    AuthorRepository authorRepository;
+    private AuthorRepository authorRepository;
 
     @Test
     void testGetByNonExistingName() {

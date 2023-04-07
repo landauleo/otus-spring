@@ -23,10 +23,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class GenreServiceTest {
 
     @Autowired
-    GenreServiceImpl genreServiceImpl;
+    private GenreServiceImpl genreServiceImpl;
 
     @Autowired
-    GenreRepository genreRepository;
+    private GenreRepository genreRepository;
 
     @Test
     void testGetByNonExistingName() {
