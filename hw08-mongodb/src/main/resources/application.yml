@@ -1,0 +1,23 @@
+spring:
+  data:
+    mongodb:
+      port: 0 # when flapdoodle using
+      database: book
+  mongodb:
+    embedded:
+      # сам spring-boot-starter-data-mongodb тащит версию 4.6.1,
+      # но mac на М1 не переваривает её и бросает ошибку:
+      # osx distribution not supported: GenericFeatureAwareVersion{4.6.1}:Platform{operatingSystem=OS_X, architecture=ARM_64},
+      # с версией ниже всё работает
+      version: 4.0.2
+
+de:
+  flapdoodle:
+    mongodb:
+      embedded:
+        version: 4.0.2
+
+  shell:
+    interactive:
+#      enabled: false
+      enabled: true

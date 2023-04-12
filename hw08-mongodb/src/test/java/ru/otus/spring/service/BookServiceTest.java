@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,18 +12,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import ru.otus.spring.repository.BookRepository;
 import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.Genre;
+import ru.otus.spring.repository.BookRepository;
+import ru.otus.spring.repository.CommentRepository;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
@@ -42,15 +44,20 @@ class BookServiceTest {
     @MockBean
     private BookRepository bookRepository;
 
+    @MockBean
+    private CommentRepository commentRepository;
+
     @Test
     @DisplayName("Сохраняет книгу")
     void insert() {
-        long mockedBookId = 0;
+        ObjectId mockedBookId = new ObjectId();
         Book mockedBook = mock(Book.class);
-        when(authorService.getByName(anyString())).thenReturn(new Author(1, "yoshimoto banana"));
-        when(genreService.getByName(anyString())).thenReturn(new Genre(1, "poem"));
+        when(mockedBook.getId()).thenReturn(mockedBookId);
+        when(authorService.getByName(anyString())).thenReturn(new Author("yoshimoto banana"));
+        when(genreService.getByName(anyString())).thenReturn(new Genre("poem"));
         when(bookRepository.save(any())).thenReturn(mockedBook);
-        long actualId = bookService.save(mockedBookId, "moshi moshi", "poem", "yoshimoto banana");
+
+        ObjectId actualId = bookService.save(mockedBookId, "moshi moshi", "poem", "yoshimoto banana");
 
         assertEquals(mockedBookId, actualId);
     }
@@ -58,20 +65,20 @@ class BookServiceTest {
     @Test
     @DisplayName("Изменяет книгу")
     void update() {
-        when(authorService.getByName(anyString())).thenReturn(new Author(1, "yoshimoto banana"));
-        when(genreService.getByName(anyString())).thenReturn(new Genre(1, "poem"));
+        when(authorService.getByName(anyString())).thenReturn(new Author("yoshimoto banana"));
+        when(genreService.getByName(anyString())).thenReturn(new Genre("poem"));
         when(bookRepository.save(any())).thenReturn(mock(Book.class));
 
-        assertDoesNotThrow(() -> bookService.save(0, "amrita", "poem", "yoshimoto banana"));
+        assertDoesNotThrow(() -> bookService.save(new ObjectId(), "amrita", "poem", "yoshimoto banana"));
     }
 
     @Test
     @DisplayName("Получает книгу по ID")
     void getById() {
-        Book expectedBook = new Book(1L, "tsugumi", new Genre(1L, "poem"), new Author(1L, "yoshimoto banana"));
-        when(bookRepository.findById(anyLong())).thenReturn(Optional.of(expectedBook));
+        Book expectedBook = new Book("tsugumi", new Genre("poem"), new Author("yoshimoto banana"));
+        when(bookRepository.findById(any())).thenReturn(Optional.of(expectedBook));
 
-        Book actualBook = bookService.getById(1L);
+        Book actualBook = bookService.getById(any());
 
         assertEquals(expectedBook, actualBook);
     }
@@ -79,7 +86,7 @@ class BookServiceTest {
     @Test
     @DisplayName("Получает все книги")
     void getAll() {
-        List<Book> expectedBooks = List.of(new Book(1L, "tsugumi", new Genre(1L, "poem"), new Author(1L, "yoshimoto banana")));
+        List<Book> expectedBooks = List.of(new Book("tsugumi", new Genre("poem"), new Author("yoshimoto banana")));
         when(bookRepository.findAll()).thenReturn(expectedBooks);
 
         List<Book> actualBooks = bookService.getAll();
@@ -91,7 +98,14 @@ class BookServiceTest {
     @Test
     @DisplayName("Удаляет книгу по ID")
     void deleteById() {
-        assertDoesNotThrow(() -> bookService.deleteById(1));
+        ObjectId bookId = new ObjectId();
+        Book expectedBook = new Book(bookId, "tsugumi", new Genre("poem"), new Author("yoshimoto banana"));
+        when(bookRepository.findById(any())).thenReturn(Optional.of(expectedBook));
+
+        assertDoesNotThrow(() -> bookService.deleteById(bookId));
+
+        verify(bookRepository).deleteById(bookId);
+        verify(commentRepository).deleteAllByBookId(bookId);
     }
 
 }

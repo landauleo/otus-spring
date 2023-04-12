@@ -62,7 +62,7 @@ class BookServiceTest {
     }
 
     @Test
-    @DisplayName("Полоучает книгу по ID")
+    @DisplayName("Получает книгу по ID")
     void getById() {
         Book expectedBook = new Book(1L, "tsugumi", new Genre(1L, "poem"), new Author(1L, "yoshimoto banana"));
         when(bookDao.getById(anyLong())).thenReturn(expectedBook);
