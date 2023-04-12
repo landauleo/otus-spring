@@ -2,13 +2,13 @@ package ru.otus.spring.repository;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
@@ -27,19 +27,22 @@ class BookDaoMongoTest {
     @Autowired
     private BookRepository bookRepository;
 
+    @Autowired
+    private CommentRepository commentRepository;
+
     @Test
     @DisplayName("Сохраняет книгу")
-    void testInsert() {
+    void testInsert(@Autowired MongoTemplate mongoTemplate) {
         Genre genre = new Genre("poem");
         Author author = new Author("yoshimoto banana");
         Book book = new Book("sleeping", genre, author);
 
-        int originalSize = bookRepository.findAll().size();
+        int originalSize = mongoTemplate.findAll(Book.class).size();
         assertEquals(0, originalSize);
         ObjectId bookId = bookRepository.save(book).getId();
         book.setId(bookId);
-        Book foundBook = bookRepository.findById(bookId).get();
-        int updatedSize = bookRepository.findAll().size();
+        Book foundBook = mongoTemplate.findById(bookId, Book.class);
+        int updatedSize = mongoTemplate.findAll(Book.class).size();
 
         assertNotEquals(originalSize, updatedSize);
         assertEquals(1, updatedSize);
@@ -48,16 +51,16 @@ class BookDaoMongoTest {
 
     @Test
     @DisplayName("Сохраняет несколько книг")
-    void testInsertMultiple() {
+    void testInsertMultiple(@Autowired MongoTemplate mongoTemplate) {
         Genre genre = new Genre("poem");
         Author author = new Author("yoshimoto banana");
         Book firstBook = new Book("sleeping", genre, author);
         Book secondBook = new Book("amrita", genre, author);
 
-        int originalSize = bookRepository.findAll().size();
+        int originalSize = mongoTemplate.findAll(Book.class).size();
         bookRepository.save(firstBook);
         bookRepository.save(secondBook);
-        int updatedSize = bookRepository.findAll().size();
+        int updatedSize = mongoTemplate.findAll(Book.class).size();
 
         assertEquals(0, originalSize);
         assertEquals(2, updatedSize);
@@ -71,13 +74,10 @@ class BookDaoMongoTest {
         ObjectId bookId = new ObjectId();
         Book book = new Book(bookId, "sleeping", genre, author);
 
-        bookRepository.save(book);
         Book originalBookFromDb = bookRepository.save(book);
         Book updatedVersionOfBook = new Book(bookId, "tsugumi", genre, author);
 
-        //тут валилась ошибка изначально, потому что bookId = 0, из-за чего mongo воспринимал это как новую сущность https://stackoverflow.com/a/71349538
-        bookRepository.save(updatedVersionOfBook);
-        Book updatedBookFromDb = bookRepository.findById(bookId).get();
+        Book updatedBookFromDb = bookRepository.save(updatedVersionOfBook);
 
         assertEquals(updatedVersionOfBook, updatedBookFromDb);
         assertNotEquals(originalBookFromDb, updatedBookFromDb);
@@ -85,11 +85,11 @@ class BookDaoMongoTest {
 
     @Test
     @DisplayName("Получает книгу по ID")
-    void testGetById() {
+    void testGetById(@Autowired MongoTemplate mongoTemplate) {
         Genre genre = new Genre("poem");
         Author author = new Author("yoshimoto banana");
         Book book = new Book("sleeping", genre, author);
-        ObjectId bookId = bookRepository.save(book).getId();
+        ObjectId bookId = mongoTemplate.save(book).getId();
         book.setId(bookId);
 
         Book bookFromDb = bookRepository.findById(bookId).get();
@@ -100,10 +100,10 @@ class BookDaoMongoTest {
     //тут в отличие от прошлого дз пришлось убрать @Sql, потому что в этом модуле в зависимостях больше нет spring-jdbc
     @Test
     @DisplayName("Получает все книги")
-    void testGetAll() {
+    void testGetAll(@Autowired MongoTemplate mongoTemplate) {
         Genre genre = new Genre("poem");
         Author author = new Author("yoshimoto banana");
-        bookRepository.insert(List.of(
+        mongoTemplate.insertAll(List.of(
                 new Book("kitchen", genre, author),
                 new Book("harboiled/hardluck", genre, author),
                 new Book("moshi moshi", genre, author),
@@ -117,15 +117,15 @@ class BookDaoMongoTest {
 
     @Test
     @DisplayName("Удаляет книгу по ID")
-    void testDeleteById() {
+    void testDeleteById(@Autowired MongoTemplate mongoTemplate) {
         ObjectId bookId = new ObjectId();
         Genre genre = new Genre("poem");
         Author author = new Author("yoshimoto banana");
-        Book book = bookRepository.save(new Book(bookId, "sleeping", genre, author));
+        Book book = mongoTemplate.save(new Book(bookId, "sleeping", genre, author));
 
         assertNotNull(book);
         assertDoesNotThrow(() -> bookRepository.deleteById(bookId));
-        assertEquals(Optional.empty(), bookRepository.findById(bookId));
+        assertEquals(null, mongoTemplate.findById(bookId, Book.class));
     }
 
 }

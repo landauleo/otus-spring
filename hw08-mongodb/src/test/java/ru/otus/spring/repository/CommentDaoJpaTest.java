@@ -1,14 +1,12 @@
 package ru.otus.spring.repository;
 
-import java.util.NoSuchElementException;
-import java.util.Optional;
-
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
@@ -19,8 +17,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @DataMongoTest
 @DisplayName("Dao для работы с комментариями")
@@ -34,14 +31,12 @@ class CommentDaoJpaTest {
     private BookRepository bookRepository;
 
     @Test
-    @DisplayName("Сохраняет комментарий")
+    @DisplayName("Сохраняет комментарий и находит его по id книги")
     void testInsert() {
         Genre genre = new Genre("poem");
         Author author = new Author("yoshimoto banana");
-        Book book = new Book("sleeping", genre, author);
-        when(bookRepository.save(book)).thenReturn(book);
-        ObjectId bookId = bookRepository.save(book).getId();
-        when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
+        ObjectId bookId = new ObjectId();
+        Book book = new Book(bookId, "sleeping", genre, author);
 
         assertEquals(0, commentRepository.findByBookId(bookId).size());
 
@@ -51,14 +46,12 @@ class CommentDaoJpaTest {
     }
 
     @Test
-    @DisplayName("Сохраняет много комментариев")
+    @DisplayName("Сохраняет много комментариев и находит их по id книги")
     void testInsertMultiple() {
         Genre genre = new Genre("poem");
         Author author = new Author("yoshimoto banana");
-        Book book = new Book("sleeping", genre, author);
-        when(bookRepository.save(book)).thenReturn(book);
-        ObjectId bookId = bookRepository.save(book).getId();
-        when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
+        ObjectId bookId = new ObjectId();
+        Book book = new Book(bookId, "sleeping", genre, author);
 
         assertEquals(0, commentRepository.findByBookId(bookId).size());
 
@@ -72,20 +65,19 @@ class CommentDaoJpaTest {
 
     @Test
     @DisplayName("Изменяет комментарий")
-    void testUpdate() {
+    void testUpdate(@Autowired MongoTemplate mongoTemplate) {
         Genre genre = new Genre("poem");
         Author author = new Author("yoshimoto banana");
         Book book = new Book("sleeping", genre, author);
         ObjectId commentId = new ObjectId();
         Comment comment = new Comment(commentId, "filthy animals", book);
 
-        bookRepository.save(book);
         commentRepository.save(comment);
-        Comment originalCommentFromDb = commentRepository.findById(commentId).get();
+        Comment originalCommentFromDb = mongoTemplate.findById(commentId, Comment.class);
 
         Comment updatedVersionOfComment = new Comment(commentId, "fluffy animals");
         commentRepository.save(updatedVersionOfComment);
-        Comment updatedCommentFromDb = commentRepository.findById(commentId).get();
+        Comment updatedCommentFromDb = mongoTemplate.findById(commentId, Comment.class);
 
         assertEquals(comment, originalCommentFromDb);
         assertNotEquals(originalCommentFromDb, updatedCommentFromDb);
@@ -93,17 +85,16 @@ class CommentDaoJpaTest {
 
     @Test
     @DisplayName("Получает комментарии по ID книги")
-    void testGetById() {
+    void testGetById(@Autowired MongoTemplate mongoTemplate) {
         Genre genre = new Genre("poem");
         Author author = new Author("yoshimoto banana");
-        Book book = new Book("sleeping", genre, author);
+        ObjectId bookId = new ObjectId();
+        Book book = new Book(bookId, "sleeping", genre, author);
         Comment negativeComment = new Comment("I hate japanese literature", book);
         Comment positiveComment = new Comment("I love japanese literature", book);
-        when(bookRepository.save(book)).thenReturn(book);
 
-        ObjectId bookId = bookRepository.save(book).getId();
-        commentRepository.save(negativeComment);
-        commentRepository.save(positiveComment);
+        mongoTemplate.save(negativeComment);
+        mongoTemplate.save(positiveComment);
         int originalSize = commentRepository.findByBookId(bookId).size();
 
         assertNotEquals(0, originalSize);
@@ -112,18 +103,18 @@ class CommentDaoJpaTest {
 
     @Test
     @DisplayName("Удаляет комментарий по ID")
-    void testDeleteById() {
+    void testDeleteById(@Autowired MongoTemplate mongoTemplate) {
         Genre genre = new Genre("poem");
         Author author = new Author("yoshimoto banana");
         Book book = new Book("sleeping", genre, author);
         Comment comment = new Comment("filthy animals", book);
-        ObjectId commentId = commentRepository.save(comment).getId();
-        Comment foundComment = commentRepository.findById(commentId).get();
+        ObjectId commentId = mongoTemplate.save(comment).getId();
+        Comment foundComment = mongoTemplate.findById(commentId, Comment.class);
 
         commentRepository.deleteById(commentId);
 
         assertThat(foundComment).isNotNull();
-        assertThrows(NoSuchElementException.class, () -> commentRepository.findById(commentId).get());
+        assertNull(mongoTemplate.findById(commentId, Comment.class));
     }
 
 }
