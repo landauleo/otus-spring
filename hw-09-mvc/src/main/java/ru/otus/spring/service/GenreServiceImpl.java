@@ -15,7 +15,7 @@ public class GenreServiceImpl implements GenreService {
 
     @Transactional
     public Genre getByName(String name) {
-        return genreRepository.findByName(name).orElse(genreRepository.save(new Genre(new ObjectId(), name)));
+        return genreRepository.findByName(name).orElse(new Genre(new ObjectId(), name));
     }
 
 }

@@ -1,19 +1,19 @@
 package ru.otus.spring.service;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import ru.otus.spring.domain.Author;
 import ru.otus.spring.repository.AuthorRepository;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(SpringExtension.class)
 @Import({AuthorServiceImpl.class})
@@ -29,17 +29,20 @@ class AuthorServiceTest {
 
     @Test
     void testGetByNonExistingName() {
-        EmptyResultDataAccessException exception = assertThrows(EmptyResultDataAccessException.class, () -> authorServiceImpl.getByName("not existing name"));
-        assertEquals(exception.getMessage(), "No author with name: not existing name");
+        String nonExistingGenreName = "not existing name";
 
+        assertEquals(Optional.empty(), authorRepository.findByName(nonExistingGenreName));
+        assertDoesNotThrow(() -> authorServiceImpl.getByName(nonExistingGenreName));
+        assertNotNull(authorServiceImpl.getByName(nonExistingGenreName));
     }
 
     @Test
     void testGetByExistingName() {
-        String existingAuthorName = "existing name";
-        authorRepository.save(new Author(existingAuthorName));
+        String existingGenreName = "existing name";
 
-        assertDoesNotThrow(() -> authorServiceImpl.getByName(existingAuthorName));
+        assertEquals(Optional.empty(), authorRepository.findByName(existingGenreName));
+        assertDoesNotThrow(() -> authorServiceImpl.getByName(existingGenreName));
+        assertNotNull(authorRepository.findByName(existingGenreName));
     }
 
 }

@@ -1,20 +1,19 @@
 package ru.otus.spring.service;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import ru.otus.spring.domain.Author;
-import ru.otus.spring.domain.Genre;
 import ru.otus.spring.repository.GenreRepository;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(SpringExtension.class)
 @Import({GenreServiceImpl.class})
@@ -30,17 +29,21 @@ class GenreServiceTest {
 
     @Test
     void testGetByNonExistingName() {
-        EmptyResultDataAccessException exception = assertThrows(EmptyResultDataAccessException.class, () -> genreServiceImpl.getByName("not existing name"));
-        assertEquals(exception.getMessage(), "No genre with name: not existing name");
+        String nonExistingGenreName = "not existing name";
+
+        assertEquals(Optional.empty(), genreRepository.findByName(nonExistingGenreName));
+        assertDoesNotThrow(() -> genreServiceImpl.getByName(nonExistingGenreName));
+        assertNotNull(genreRepository.findByName(nonExistingGenreName));
 
     }
 
     @Test
     void testGetByExistingName() {
         String existingGenreName = "existing name";
-        genreRepository.save(new Genre(existingGenreName));
 
+        assertEquals(Optional.empty(), genreRepository.findByName(existingGenreName));
         assertDoesNotThrow(() -> genreServiceImpl.getByName(existingGenreName));
+        assertNotNull(genreRepository.findByName(existingGenreName));
     }
 
 }

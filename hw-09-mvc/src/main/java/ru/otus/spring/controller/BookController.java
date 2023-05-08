@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.otus.spring.controller.dto.BookDto;
@@ -42,13 +43,13 @@ public class BookController {
     }
 
     @PostMapping("/edit")
-    public String editBook(BookDto bookDto) {
+    public String editBook(@ModelAttribute(value = "bookDto") BookDto bookDto) {
         bookService.save(new ObjectId(bookDto.getId()), bookDto.getName(), bookDto.getGenre(), bookDto.getAuthor());
         return "redirect:/";
     }
 
-    @GetMapping("/delete")
-    public String deletePage(@RequestParam("id") String id) {
+    @GetMapping("/delete/{id}")
+    public String delete(@PathVariable("id") String id) {
         bookService.deleteById(new ObjectId(id));
         return "redirect:/";
     }
@@ -63,8 +64,8 @@ public class BookController {
         return "create";
     }
 
-    @PostMapping("/create")
-    public String saveBook(@ModelAttribute(value = "bookDto") BookDto bookDto) {
+    @PostMapping(value = "/create")
+    public String createBook(@ModelAttribute(value = "bookDto") BookDto bookDto) {
         bookService.save(new ObjectId(), bookDto.getName(), bookDto.getGenre(), bookDto.getAuthor());
         return "redirect:/";
     }

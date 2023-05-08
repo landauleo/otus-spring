@@ -30,8 +30,8 @@
                     <button id="edit-button" th:href="@{/edit(id=${book.id})}">
                         <a href="edit.html" th:href="@{/edit(id=${book.id})}">Edit</a>
                     </button>
-                    <button id="delete-button" th:href="@{/delete(id=${book.id})}">
-                        <a href="delete.html" th:href="@{/delete(id=${book.id})}">Delete</a>
+                    <button id="delete-button" th:href="@{/delete/{id}(id=${book.id})}">
+                        <a href="delete.html" th:href="@{/delete/{id}(id=${book.id})}">Delete</a>
                     </button>
                 </div>
             </td>

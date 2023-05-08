@@ -15,7 +15,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Transactional
     public Author getByName(String name) {
-        return authorRepository.findByName(name).orElse(authorRepository.save(new Author(new ObjectId(), name)));
+        return authorRepository.findByName(name).orElse(new Author(new ObjectId(), name));
     }
 
 }
