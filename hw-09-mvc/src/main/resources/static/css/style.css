@@ -1,7 +1,10 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,500,300,700);
 
 .books td:first-child, .books th:first-child {
-    width: 200px;
+    min-width: 200px;
+}
+.books td:last-child, .books th:last-child {
+    max-width: 150px;
 }
 
 h1 {
@@ -58,4 +61,64 @@ section {
 .actions {
     display: flex;
     flex-direction: column;
+}
+.actions #edit, #delete {
+    padding: 5px;
+}
+
+input:read-only {
+    background: lightgray;
+}
+
+#create-form, #edit-form {
+    text-align: center;
+}
+
+.row {
+    margin-top: 10px;
+    font-weight: 300;
+    font-size: 20px;
+}
+
+.row input {
+    font-weight: 300;
+    font-size: 20px;
+    width: 400px;
+    display: inline-block;
+    box-shadow: aquamarine;
+}
+
+.row label {
+    width: 70px;
+    display: inline-block;
+    color: #fff;
+}
+
+button {
+    font-weight: 300;
+    font-size: 20px;
+    max-width: 100px;
+    margin: 5px;
+    border-radius: 10px;
+}
+
+.create-empty-button {
+    left: 48%;
+    position: absolute;
+}
+
+.cancel {
+    cursor: alias;
+}
+
+.error-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+a:link, a:visited, a:hover, a:active {
+    color: black;
+    background-color: transparent;
+    text-decoration: none;
 }

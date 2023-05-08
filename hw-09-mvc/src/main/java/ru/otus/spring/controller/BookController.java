@@ -1,17 +1,22 @@
 package ru.otus.spring.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import ru.otus.spring.domain.Author;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import ru.otus.spring.controller.dto.BookDto;
 import ru.otus.spring.domain.Book;
-import ru.otus.spring.domain.Genre;
 import ru.otus.spring.service.BookService;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 public class BookController {
@@ -20,26 +25,53 @@ public class BookController {
 
     @GetMapping("/")
     public String listPage(Model model) {
-//        List<Book> books = bookService.getAll();
-//        model.addAttribute("books", books);
-        model.addAttribute("books", List.of(
-                new Book(new ObjectId(),
-                        "sss",
-                        new Genre("sss"),
-                        new Author("ssssa"))));
+        List<BookDto> books = bookService.getAll()
+                .stream()
+                .map(BookDto::toDto)
+                .collect(Collectors.toList());
+        model.addAttribute("books", books);
+        log.info("{} books found", books.size());
         return "list";
     }
 
-//    @GetMapping("/edit")
-//    public String editPage(@RequestParam("id") long id, Model model) {
-//        Person person = repository.findById(id).orElseThrow(NotD::new);
-//        model.addAttribute("person", person);
-//        return "edit";
-//    }
-//
-//    @PostMapping("/edit")
-//    public String savePerson(Person person) {
-//        repository.save(person);
-//        return "redirect:/";
-//    }
+    @GetMapping("/edit")
+    public String editPage(@RequestParam("id") String id, Model model) {
+        Book book = bookService.getById(new ObjectId(id));
+        model.addAttribute("book", BookDto.toDto(book));
+        return "edit";
+    }
+
+    @PostMapping("/edit")
+    public String editBook(BookDto bookDto) {
+        bookService.save(new ObjectId(bookDto.getId()), bookDto.getName(), bookDto.getGenre(), bookDto.getAuthor());
+        return "redirect:/";
+    }
+
+    @GetMapping("/delete")
+    public String deletePage(@RequestParam("id") String id) {
+        bookService.deleteById(new ObjectId(id));
+        return "redirect:/";
+    }
+
+    @GetMapping("/create")
+    public String createPage(Model model) {
+        model.addAttribute("bookDto", new BookDto(
+                null,
+                "The Girl with the Dragon Tattoo",
+                "crime",
+                "Stieg Larsson"));
+        return "create";
+    }
+
+    @PostMapping("/create")
+    public String saveBook(@ModelAttribute(value = "bookDto") BookDto bookDto) {
+        bookService.save(new ObjectId(), bookDto.getName(), bookDto.getGenre(), bookDto.getAuthor());
+        return "redirect:/";
+    }
+
+    @GetMapping("/error")
+    public String errorPage() {
+        return "error";
+    }
+
 }
