@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.otus.spring.controller.dto.BookDto;
 import ru.otus.spring.domain.Book;
+import ru.otus.spring.service.AuthorService;
 import ru.otus.spring.service.BookService;
+import ru.otus.spring.service.GenreService;
 
 @Slf4j
 @Controller
@@ -23,6 +25,8 @@ import ru.otus.spring.service.BookService;
 public class BookController {
 
     private final BookService bookService;
+    private final GenreService genreService;
+    private final AuthorService authorService;
 
     @GetMapping("/")
     public String listPage(Model model) {
@@ -37,6 +41,8 @@ public class BookController {
 
     @GetMapping("/edit")
     public String editPage(@RequestParam("id") String id, Model model) {
+        model.addAttribute("genres", genreService.getAll());
+        model.addAttribute("authors", authorService.getAll());
         Book book = bookService.getById(new ObjectId(id));
         model.addAttribute("book", BookDto.toDto(book));
         return "edit";
@@ -56,6 +62,8 @@ public class BookController {
 
     @GetMapping("/create")
     public String createPage(Model model) {
+        model.addAttribute("genres", genreService.getAll());
+        model.addAttribute("authors", authorService.getAll());
         model.addAttribute("bookDto", new BookDto(
                 null,
                 "The Girl with the Dragon Tattoo",

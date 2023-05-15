@@ -3,6 +3,7 @@
 .books td:first-child, .books th:first-child {
     min-width: 200px;
 }
+
 .books td:last-child, .books th:last-child {
     max-width: 150px;
 }
@@ -62,6 +63,7 @@ section {
     display: flex;
     flex-direction: column;
 }
+
 .actions #edit, #delete {
     padding: 5px;
 }
@@ -80,7 +82,7 @@ input:read-only {
     font-size: 20px;
 }
 
-.row input {
+.row input, .row select {
     font-weight: 300;
     font-size: 20px;
     width: 400px;
