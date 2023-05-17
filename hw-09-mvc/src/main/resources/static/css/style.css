@@ -1,0 +1,126 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,500,300,700);
+
+.books td:first-child, .books th:first-child {
+    min-width: 200px;
+}
+
+.books td:last-child, .books th:last-child {
+    max-width: 150px;
+}
+
+h1 {
+    font-size: 30px;
+    color: #fff;
+    text-transform: uppercase;
+    font-weight: 300;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.books {
+    width: 100%;
+    table-layout: fixed;
+}
+
+.books tbody {
+    height: 300px;
+    overflow-x: auto;
+    margin-top: 0px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.books th {
+    padding: 20px 15px;
+    text-align: left;
+    font-weight: 500;
+    font-size: 12px;
+    color: #fff;
+    text-transform: uppercase;
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.books td {
+    padding: 15px;
+    text-align: left;
+    vertical-align: middle;
+    font-weight: 300;
+    font-size: 12px;
+    color: #fff;
+    border-bottom: solid 1px rgba(255, 255, 255, 0.1);
+}
+
+body {
+    background: -webkit-linear-gradient(left, #25c481, #25b7c4);
+    background: linear-gradient(to right, #25c481, #25b7c4);
+    font-family: 'Roboto', sans-serif;
+}
+
+section {
+    margin: 50px;
+}
+
+.actions {
+    display: flex;
+    flex-direction: column;
+}
+
+.actions #edit, #delete {
+    padding: 5px;
+}
+
+input:read-only {
+    background: lightgray;
+}
+
+#create-form, #edit-form {
+    text-align: center;
+}
+
+.row {
+    margin-top: 10px;
+    font-weight: 300;
+    font-size: 20px;
+}
+
+.row input, .row select {
+    font-weight: 300;
+    font-size: 20px;
+    width: 400px;
+    display: inline-block;
+    box-shadow: aquamarine;
+}
+
+.row label {
+    width: 70px;
+    display: inline-block;
+    color: #fff;
+}
+
+button {
+    font-weight: 300;
+    font-size: 20px;
+    max-width: 100px;
+    margin: 5px;
+    border-radius: 10px;
+}
+
+.create-empty-button {
+    left: 48%;
+    position: absolute;
+}
+
+.cancel {
+    cursor: alias;
+}
+
+.error-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+a:link, a:visited, a:hover, a:active {
+    color: black;
+    background-color: transparent;
+    text-decoration: none;
+}

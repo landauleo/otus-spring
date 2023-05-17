@@ -1,0 +1,32 @@
+spring:
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+  data:
+    mongodb:
+      port: 0 # when flapdoodle using
+      database: book
+  mongodb:
+    embedded:
+      version: 4.0.2
+
+de:
+  flapdoodle:
+    mongodb:
+      embedded:
+        version: 4.0.2
+
+mongock:
+  runner-type: "ApplicationRunner" # default -> тип запуска Mongock. В данном случае используется ApplicationRunner -> Mongock будет запускаться как часть приложения при его запуске
+  #runner-type: "InitializingBean" # альтернативный тип запуска -> Mongock будет запускаться как InitializingBean внутри контейнера Spring
+  change-logs-scan-package:
+    - ru.otus.spring.mongock.changelog
+  mongo-db:
+    write-concern:
+      journal: false #отключить журналирование при записи данных в MongoDB. Журналирование может использоваться для обеспечения надежности и восстановления данных
+    read-concern: local #это опция конфигурации, указывающая, как Mongock будет выполнять операции чтения данных из MongoDB
+
+logging:
+  level:
+    root: INFO

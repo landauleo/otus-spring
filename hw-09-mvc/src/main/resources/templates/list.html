@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>List of all books</title>
+    <link rel="stylesheet" th:href="@{/styles/css/style.css}"/>
+    <link rel="icon" type="image/x-icon" th:href="@{/images/favicon.ico}">
+</head>
+<body>
+<section>
+    <h1>Books:</h1>
+    <table class="books" th:switch="${#lists.isEmpty(books)}">
+        <thead th:case="false">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Genre</th>
+            <th>Author</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="book : ${books}">
+            <td th:text="${book.id}">1</td>
+            <td th:text="${book.name}">The Girl with the Dragon Tattoo</td>
+            <td th:text="${book.genre}">crime</td>
+            <td th:text="${book.author}">Stieg Larsson</td>
+            <td>
+                <div class="actions">
+                    <button id="edit-button" th:href="@{/edit(id=${book.id})}">
+                        <a href="edit.html" th:href="@{/edit(id=${book.id})}">Edit</a>
+                    </button>
+                    <form th:action="@{/delete/{id}(id=${book.id})}" th:method="post">
+                        <button type="submit">Delete</button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <button class="create-empty-button" onclick="location.href = '/create';" th:href="@{/create}">Create</button>
+</section>
+</body>
+</html>

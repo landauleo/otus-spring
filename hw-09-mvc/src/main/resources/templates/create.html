@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Book edition</title>
+    <link rel="stylesheet" th:href="@{/styles/css/style.css}"/>
+    <link rel="icon" type="image/x-icon" th:href="@{/images/favicon.ico}">
+</head>
+
+<body>
+<section>
+    <form id="create-form" action="edit.html" th:method="post" th:action="@{/create}" th:object="${bookDto}">
+        <h1>Add a new book in your collection:</h1>
+
+        <div class="row">
+            <label for="book-name-input">Name:</label>
+            <input id="book-name-input" name="name" required type="text" value="The Girl with the Dragon Tattoo" th:field="*{name}"/>
+        </div>
+
+        <div class="row">
+            <label for="book-genre-select">Genre:</label>
+            <select id="book-genre-select" name="genre" required th:field="*{genre}">
+<!--                th:value - значение, th:text - отображаемый текст-->
+                <option th:each="genreItem : ${genres}" th:value="${genreItem.name}" th:text="${genreItem.name}" th:selected="${genreItem.name == genre}"></option>
+            </select>
+        </div>
+
+        <div class="row">
+            <label for="book-author-select">Author:</label>
+            <select id="book-author-select" name="author" required th:field="*{author}">
+                <option th:each="authorItem : ${authors}" th:value="${authorItem.name}" th:text="${authorItem.name}" th:selected="${authorItem.name == author}"></option>
+            </select>
+        </div>
+
+        <div class="row">
+            <button class="save" type="submit">Save</button>
+            <a href="list.html" th:href="@{/}">
+                <button class="cancel" type="button">Cancel</button>
+            </a>
+        </div>
+    </form>
+</section>
+
+</body>
+</html>
