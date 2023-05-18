@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>List of all books</title>
+    <link rel="stylesheet" href="../static/css/style.css"/>
+    <link rel="icon" type="image/x-icon" href="../static/images/favicon.ico">
+</head>
+<body>
+<section>
+    <h1 id="create-book-h1">Book list:</h1>
+    <table class="books" id="books-table">
+        <thead id="books-head">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Genre</th>
+            <th>Author</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody id="books-body">
+        </tbody>
+    </table>
+    <button id="create-empty-button" onclick="showForm(undefined)">Create</button>
+    <div id="form-container" style="display: none;">
+        <form id="create-form">
+            <h1 id="form-heading"></h1>
+
+            <div class="id-row">
+                <label for="book-id-input">id:</label>
+                <input id="book-id-input" name="id" type="text" value="111">
+            </div>
+
+            <div class="row">
+                <label for="book-name-input">Name:</label>
+                <input id="book-name-input" name="name" required type="text" value="The Girl with the Dragon Tattoo">
+            </div>
+
+            <div class="row">
+                <label for="book-genre-select">Genre:</label>
+                <select id="book-genre-select" name="genre" required>
+                    <!-- Options for genres -->
+                </select>
+            </div>
+
+            <div class="row">
+                <label for="book-author-select">Author:</label>
+                <select id="book-author-select" name="author" required>
+                    <!-- Options for authors -->
+                </select>
+            </div>
+
+            <div class="row">
+                <button class="save" type="button" onclick="saveBook()">Save</button>
+                <button class="cancel" type="button" onclick="cancelCreateForm()">Cancel</button>
+            </div>
+        </form>
+    </div>
+</section>
+
+<script>
+    const targetUrl = 'http://localhost:8080';
+
+    //типа useEffect
+    document.addEventListener('DOMContentLoaded', loadBooks);
+
+    function loadBooks() {
+        fetch(`${targetUrl}/book`)
+            .then(response => response.json())
+            .then(books => displayBooks(books))
+            .catch(error => {
+                console.error('Internal server error:', error);
+            });
+    }
+
+    function displayBooks(books) {
+        const tableBody = document.getElementById('books-body');
+        if (books.length === 0) {
+            document.getElementById('books-table').style.display = 'none';
+        } else {
+            let html = '';
+            books.forEach(book => {
+                html += `
+                    <tr>
+                        <td>${book.id}</td>
+                        <td>${book.name}</td>
+                        <td>${book.genre}</td>
+                        <td>${book.author}</td>
+                        <td>
+                            <div class="actions">
+<!--                            позволяет интерполировать значение переменной book в строку, без JSON.stringify не работает-->
+                            <button onclick='editBook(${JSON.stringify(book)})'>Edit</button>
+                            <button onclick='deleteBook(${JSON.stringify(book.id)})'>Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            tableBody.innerHTML = html;
+        }
+    }
+
+    function editBook(book) {
+        showForm(book);
+        document.getElementById('book-id-input').value = book.id;
+        document.getElementById('book-name-input').value = book.name;
+        document.getElementById('form-heading').textContent = 'Edit your book';
+    }
+
+    function deleteBook(bookId) {
+        fetch(`${targetUrl}/book/${bookId}`, {method: 'DELETE'})
+            .then(response => {
+                if (response.ok) {
+                    loadBooks();
+                } else {
+                    alert('Failed to delete book.');
+                }
+            }).catch(error => {
+            console.error('Internal server error:', error);
+        });
+    }
+
+    function showForm(book) {
+        document.getElementById('form-heading').textContent = 'Add a new book to your collection:';
+        document.getElementById('books-table').style.display = 'none';
+        document.getElementById('create-book-h1').style.display = 'none';
+        document.getElementById('create-empty-button').style.display = 'none';
+        document.getElementById('form-container').style.display = 'block';
+
+        fetch(`${targetUrl}/genres`)
+            .then(response => response.json())
+            .then(genres => populateOptions('book-genre-select', genres, book))
+            .catch(error => {
+                console.error('Internal server error:', error);
+            });
+
+        fetch(`${targetUrl}/authors`)
+            .then(response => response.json())
+            .then(authors => populateOptions('book-author-select', authors, book))
+            .catch(error => {
+                console.error('Internal server error:', error);
+            });
+
+        function populateOptions(selectId, options, book) {
+            const selectElement = document.getElementById(selectId);
+            selectElement.innerHTML = '';
+
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option;
+                optionElement.textContent = option;
+                if (book && (book.genre === option || book.author === option)) {
+                    optionElement.selected = true;
+                }
+                selectElement.appendChild(optionElement);
+            });
+        }
+    }
+
+    function cancelCreateForm() {
+        document.getElementById('books-table').style.display = 'table';
+        document.getElementById('create-book-h1').style.display = 'block';
+        document.getElementById('create-empty-button').style.display = 'block';
+        document.getElementById('form-container').style.display = 'none';
+    }
+
+    function saveBook() {
+        const id = document.getElementById('book-id-input').value;
+        const name = document.getElementById('book-name-input').value;
+        const genre = document.getElementById('book-genre-select').value;
+        const author = document.getElementById('book-author-select').value;
+
+        const newBook = {
+            id: id,
+            name: name,
+            genre: genre,
+            author: author
+        };
+
+        fetch(`${targetUrl}/book`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newBook)
+        })
+            .then(response => {
+                if (response.ok) {
+                    loadBooks();
+                    cancelCreateForm();
+                } else {
+                    alert('Failed to create book.');
+                }
+            })
+            .catch(error => {
+                console.error('Internal server error:', error);
+            });
+    }
+</script>
+
+</body>
+</html>

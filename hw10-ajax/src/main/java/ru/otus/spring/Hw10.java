@@ -8,11 +8,10 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @EnableMongock
 @SpringBootApplication
 @EnableMongoRepositories
-//@EnableWebMvc когда оставляла тут эту аннотацию, а не уносила в WebMvcConfig, то
-public class Hw09 {
+public class Hw10 {
 
     public static void main(String[] args) {
-        SpringApplication.run(Hw09.class);
+        SpringApplication.run(Hw10.class);
     }
 
 }

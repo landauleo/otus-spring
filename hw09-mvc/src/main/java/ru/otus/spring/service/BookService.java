@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.bson.types.ObjectId;
 import ru.otus.spring.domain.Book;
-import ru.otus.spring.domain.Comment;
 
 public interface BookService {
 
