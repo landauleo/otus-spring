@@ -6,7 +6,6 @@ import org.bson.types.ObjectId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -20,7 +19,9 @@ import ru.otus.spring.repository.AuthorRepository;
 import ru.otus.spring.repository.BookRepository;
 import ru.otus.spring.repository.CommentRepository;
 import ru.otus.spring.repository.GenreRepository;
+import ru.otus.spring.service.AuthorService;
 import ru.otus.spring.service.BookService;
+import ru.otus.spring.service.GenreService;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -35,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("Controller для работы с книгами")
-@WebMvcTest(controllers = BookController.class, excludeAutoConfiguration = EmbeddedMongoAutoConfiguration.class)
+@WebMvcTest(controllers = BookController.class)
 class BookControllerTest {
 
     @Autowired
@@ -52,6 +53,12 @@ class BookControllerTest {
 
     @MockBean
     private GenreRepository genreRepository;
+
+    @MockBean
+    private GenreService genreService;
+
+    @MockBean
+    private AuthorService authorService;
 
     @MockBean
     private CommentRepository commentRepository;
@@ -89,7 +96,7 @@ class BookControllerTest {
         Book book = new Book(id, "Amok", new Genre("novella"), new Author("Stefan Zweig"));
         given(bookService.getById(id)).willReturn(book);
 
-        MvcResult mvcResult = mvc.perform(get("/edit/").param("id", id.toString()))
+        MvcResult mvcResult = mvc.perform(get("/edit").param("id", id.toString()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(TEXT_HTML_UTF8_MIME_TYPE))
                 .andReturn();
@@ -115,7 +122,7 @@ class BookControllerTest {
 
     @Test
     void deleteTest() throws Exception {
-        mvc.perform(get("/delete/" + id))
+        mvc.perform(post("/delete/" + id))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"));
 

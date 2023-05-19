@@ -14,9 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.otus.spring.controller.dto.BookDto;
-import ru.otus.spring.service.AuthorService;
 import ru.otus.spring.service.BookService;
-import ru.otus.spring.service.GenreService;
 
 @Slf4j
 @RestController//вместо @Controller говорит SpringBoot, что больше не надо искать View
@@ -26,8 +24,6 @@ import ru.otus.spring.service.GenreService;
 public class BookController {
 
     private final BookService bookService;
-    private final GenreService genreService;
-    private final AuthorService authorService;
 
     @GetMapping("/book")
     public List<BookDto> getAllBooks() {
