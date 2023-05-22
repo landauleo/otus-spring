@@ -69,7 +69,7 @@ class BookControllerTest {
         BookDto bookDto = new BookDto(id.toString(), "Amok", "novella", "Stefan Zweig");
         given(bookService.getAll()).willReturn(List.of(book));
 
-        mvc.perform(get("/book"))
+        mvc.perform(get("/api/book"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(List.of(bookDto))));
 
@@ -81,7 +81,7 @@ class BookControllerTest {
         BookDto bookToEdit = new BookDto(id.toString(), "Unbekannter", "novella", "Stefan Zweig");
         given(bookService.save(id, "Unbekannter", "novella", "Stefan Zweig")).willReturn(id);
 
-        mvc.perform(post("/book")
+        mvc.perform(post("/api/book")
                         .content(objectMapper.writeValueAsString(bookToEdit))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -91,7 +91,7 @@ class BookControllerTest {
 
     @Test
     void deleteTest() throws Exception {
-        mvc.perform(delete("/book/" + id)).andExpect(status().isOk());
+        mvc.perform(delete("/api/book/" + id)).andExpect(status().isOk());
 
         then(bookService).should(times(1)).deleteById(id);
     }
@@ -100,7 +100,7 @@ class BookControllerTest {
     void createBookTest() throws Exception {
         BookDto bookToCreate = new BookDto(null, "Amok", "novella", "Stefan Zweig");
 
-        mvc.perform(post("/book")
+        mvc.perform(post("/api/book")
                         .content(objectMapper.writeValueAsString(bookToCreate))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());

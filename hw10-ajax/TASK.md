@@ -9,3 +9,8 @@
 2. Минимум: получение одной сущности и отображение её на странице с помощью XmlHttpRequest, fetch api или jQuery; 
 3. Опционально максимум: полноценное SPA приложение на React/Vue/Angular, только REST-контроллеры; 
 4. Протестировать все эндпойнты REST-контроллеров с моками зависимостей;
+
+####Запуск webpack:
+````npx webpack serve --config webpack.config.js````
+
+```npm install html-loader --save-dev```

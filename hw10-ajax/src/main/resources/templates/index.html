@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
     <title>List of all books</title>
-    <link rel="stylesheet" href="../static/css/style.css"/>
-    <link rel="icon" type="image/x-icon" href="../static/images/favicon.ico">
+    <link rel="stylesheet" th:href="@{/styles/css/style.css}"/>
+    <link rel="icon" type="image/x-icon" th:href="@{/images/favicon.ico}">
 </head>
 <body>
 <section>
@@ -29,7 +29,7 @@
 
             <div class="id-row">
                 <label for="book-id-input">id:</label>
-                <input id="book-id-input" name="id" type="text" value="111">
+                <input id="book-id-input" name="id" type="text">
             </div>
 
             <div class="row">
@@ -66,7 +66,7 @@
     document.addEventListener('DOMContentLoaded', loadBooks);
 
     function loadBooks() {
-        fetch(`${targetUrl}/book`)
+        fetch(`${targetUrl}/api/book`)
             .then(response => response.json())
             .then(books => displayBooks(books))
             .catch(error => {
@@ -109,7 +109,7 @@
     }
 
     function deleteBook(bookId) {
-        fetch(`${targetUrl}/book/${bookId}`, {method: 'DELETE'})
+        fetch(`${targetUrl}/api/book/${bookId}`, {method: 'DELETE'})
             .then(response => {
                 if (response.ok) {
                     loadBooks();
@@ -128,14 +128,14 @@
         document.getElementById('create-empty-button').style.display = 'none';
         document.getElementById('form-container').style.display = 'block';
 
-        fetch(`${targetUrl}/genres`)
+        fetch(`${targetUrl}/api/genre`)
             .then(response => response.json())
             .then(genres => populateOptions('book-genre-select', genres, book))
             .catch(error => {
                 console.error('Internal server error:', error);
             });
 
-        fetch(`${targetUrl}/authors`)
+        fetch(`${targetUrl}/api/author`)
             .then(response => response.json())
             .then(authors => populateOptions('book-author-select', authors, book))
             .catch(error => {
@@ -178,7 +178,7 @@
             author: author
         };
 
-        fetch(`${targetUrl}/book`, {
+        fetch(`${targetUrl}/api/book`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
