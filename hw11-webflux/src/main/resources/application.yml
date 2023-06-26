@@ -20,8 +20,11 @@ de:
 mongock:
   runner-type: "ApplicationRunner" # default -> тип запуска Mongock. В данном случае используется ApplicationRunner -> Mongock будет запускаться как часть приложения при его запуске
   #runner-type: "InitializingBean" # альтернативный тип запуска -> Mongock будет запускаться как InitializingBean внутри контейнера Spring
+  #эта property позволила не писать @EnableMongock -> ибо подход с аннотацией требует MongoTemplate, MongoTransactionManager to be injected in the Spring context
   change-logs-scan-package:
     - ru.otus.spring.mongock.changelog
+#  migration-scan-package:
+#    - ru.otus.spring.mongock.changelog
   mongo-db:
     write-concern:
       journal: false #отключить журналирование при записи данных в MongoDB. Журналирование может использоваться для обеспечения надежности и восстановления данных

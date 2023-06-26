@@ -4,9 +4,12 @@ import java.net.URI;
 
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import ru.otus.spring.domain.Author;
@@ -19,6 +22,7 @@ import ru.otus.spring.repository.GenreRepository;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
+import static org.springframework.web.reactive.function.server.RouterFunctions.resources;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 import static org.springframework.web.reactive.function.server.ServerResponse.badRequest;
 import static org.springframework.web.reactive.function.server.ServerResponse.created;
@@ -28,12 +32,25 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
 @RequiredArgsConstructor
 public class FunctionalEndpointsConfig {
 
+    @Bean
+    RouterFunction<ServerResponse> staticResourcePath() {
+        return resources("/**", new ClassPathResource("static/"));
+    }
+
+    @Bean
+    RouterFunction<ServerResponse> templatesResourcePath() {
+        return resources("/**", new ClassPathResource("templates/"));
+    }
+
+    @Value("classpath:/templates/index.html")
+    private Resource index;
+
+
     private final AuthorRepository authorRepository;
     private final GenreRepository genreRepository;
     private final BookRepository bookRepository;
     private final CommentRepository commentRepository;
-    private final ReactiveMongoTemplate mongoTemplate;
-
+//    private final ReactiveMongoTemplate mongoTemplate;
     @Bean
     public RouterFunction<ServerResponse> authorRoutes() {
         return route().GET("/api/author", accept(APPLICATION_JSON), request -> ok().body(authorRepository.findAll(), Author.class)).build();
@@ -57,6 +74,16 @@ public class FunctionalEndpointsConfig {
                                 .flatMap(book -> created(URI.create("/api/book/" + book.getId()))
                                         .body(bookRepository.save(book), Book.class))
                                 .switchIfEmpty(badRequest().build()))
+                .build();
+    }
+
+    @Bean
+    public RouterFunction<ServerResponse> staticPages() {
+        return route()
+                .GET("/",
+                        request -> ok()
+                                .contentType(MediaType.TEXT_HTML)
+                                .bodyValue(index))
                 .build();
     }
 
