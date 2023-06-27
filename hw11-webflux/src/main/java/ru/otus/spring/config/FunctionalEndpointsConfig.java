@@ -45,7 +45,6 @@ public class FunctionalEndpointsConfig {
     @Value("classpath:/templates/index.html")
     private Resource index;
 
-
     private final AuthorRepository authorRepository;
     private final GenreRepository genreRepository;
     private final BookRepository bookRepository;
