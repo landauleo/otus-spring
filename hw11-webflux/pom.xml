@@ -17,28 +17,17 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <mongock.version>4.3.8</mongock.version>
-        <mongock-reactive.version>5.3.1</mongock-reactive.version>
+        <mongock-reactive.version>5.2.1</mongock-reactive.version>
+        <mongodb-reactivestreams.version>4.10.1</mongodb-reactivestreams.version>
         <flapdoodle.version>4.6.1</flapdoodle.version>
     </properties>
-
-<!--    <dependencyManagement>-->
-<!--        <dependencies>-->
-<!--            <dependency>-->
-<!--                <groupId>io.mongock</groupId>-->
-<!--                <artifactId>mongock-bom</artifactId>-->
-<!--                <version>${mongock-reactive.version}</version>-->
-<!--                <type>pom</type>-->
-<!--                <scope>import</scope>-->
-<!--            </dependency>-->
-<!--        </dependencies>-->
-<!--    </dependencyManagement>-->
 
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.github.cloudyrock.mongock</groupId>
+                <groupId>io.mongock</groupId>
                 <artifactId>mongock-bom</artifactId>
-                <version>${mongock.version}</version>
+                <version>${mongock-reactive.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -78,45 +67,36 @@
             <artifactId>de.flapdoodle.embed.mongo.spring30x</artifactId>
             <version>${flapdoodle.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.github.cloudyrock.mongock</groupId>
-            <artifactId>mongock-spring-v5</artifactId>
-            <version>${mongock.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.cloudyrock.mongock</groupId>
-            <artifactId>mongodb-springdata-v3-driver</artifactId>
-            <version>${mongock.version}</version>
-        </dependency>
-<!--        NON REACTIVE-->
-<!--        <dependency>-->
-<!--            <groupId>com.github.cloudyrock.mongock</groupId>-->
-<!--            <artifactId>mongock-spring-v5</artifactId>-->
-<!--            <version>${mongock.version}</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>com.github.cloudyrock.mongock</groupId>-->
-<!--            <artifactId>mongodb-springdata-v3-driver</artifactId>-->
-<!--            <version>${mongock.version}</version>-->
-<!--        </dependency>-->
 
-<!--        REACTIVE-->
-<!--        https://docs.mongock.io/v5/driver/mongodb-reactive/index.html-->
-<!--        <dependency>-->
-<!--            <groupId>io.mongock</groupId>-->
-<!--            <artifactId>mongock-springboot</artifactId>-->
-<!--            <version>${mongock-reactive.version}</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>io.mongock</groupId>-->
-<!--            <artifactId>mongodb-springdata-v3-driver</artifactId>-->
-<!--            <version>${mongock-reactive.version}</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>io.mongock</groupId>-->
-<!--            <artifactId>mongodb-reactive-driver</artifactId>-->
-<!--            <version>${mongock-reactive.version}</version>-->
-<!--        </dependency>-->
+        <!-- MONGOCK RUNNER -->
+        <dependency>
+            <groupId>io.mongock</groupId>
+            <artifactId>mongock-springboot-v3</artifactId>
+        </dependency>
+
+        <!-- MONGOCK DRIVER -->
+        <dependency>
+            <groupId>io.mongock</groupId>
+            <artifactId>mongodb-reactive-driver</artifactId>
+        </dependency>
+
+<!--        вроде как есть в spring-boot-starter-data-mongodb-reactive, но в оф. доке прописали https://github.com/mongock/mongock-examples/blob/master/mongodb/springboot3-reactive-jdk17/pom.xml-->
+        <!-- MONGODB DRIVER -->
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver-reactivestreams</artifactId>
+            <version>${mongodb-reactivestreams.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver-core</artifactId>
+            <version>${mongodb-reactivestreams.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>bson</artifactId>
+            <version>${mongodb-reactivestreams.version}</version>
+        </dependency>
 
     </dependencies>
 
@@ -131,36 +111,36 @@
                 <artifactId>frontend-maven-plugin</artifactId>
                 <version>1.12.1</version>
                 <executions>
-                    <execution>
-                        <id>install node and npm</id>
-                        <goals>
-                            <goal>install-node-and-npm</goal>
-                        </goals>
-                        <configuration>
-                            <nodeVersion>v18.16.0</nodeVersion>
-                            <npmVersion>9.5.1</npmVersion>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>npm install</id>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-                        <phase>generate-resources</phase>
-                        <configuration>
-                            <arguments>install</arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>npm run build</id>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-                        <phase>generate-resources</phase>
-                        <configuration>
-                            <arguments>run build</arguments>
-                        </configuration>
-                    </execution>
+<!--                    <execution>-->
+<!--                        <id>install node and npm</id>-->
+<!--                        <goals>-->
+<!--                            <goal>install-node-and-npm</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <nodeVersion>v18.16.0</nodeVersion>-->
+<!--                            <npmVersion>9.5.1</npmVersion>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                    <execution>-->
+<!--                        <id>npm install</id>-->
+<!--                        <goals>-->
+<!--                            <goal>npm</goal>-->
+<!--                        </goals>-->
+<!--                        <phase>generate-resources</phase>-->
+<!--                        <configuration>-->
+<!--                            <arguments>install</arguments>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                    <execution>-->
+<!--                        <id>npm run build</id>-->
+<!--                        <goals>-->
+<!--                            <goal>npm</goal>-->
+<!--                        </goals>-->
+<!--                        <phase>generate-resources</phase>-->
+<!--                        <configuration>-->
+<!--                            <arguments>run build</arguments>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
                 </executions>
             </plugin>
         </plugins>

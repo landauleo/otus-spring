@@ -25,6 +25,10 @@
 Старайтесь избавиться от лишних архитектурных слоёв. Самый простой вариант - весь flow в контроллере.
 
 ####Запуск webpack:
-````npx webpack serve --config webpack.config.js````
+````npx webpack serve --config webpack.config.js
 
-```npm install html-loader --save-dev```
+
+````npm install html-loader --save-dev
+
+####Что ещё важно:
+````нужно добавить ?retryWrites=false в connectionString -> mongodb://localhost:27017/book?retryWrites=false
