@@ -1,21 +1,19 @@
 package ru.otus.spring;
 
-//import io.mongock.runner.springboot.EnableMongock;
-
-import com.github.cloudyrock.spring.v5.EnableMongock;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories;
-import org.springframework.web.reactive.config.EnableWebFlux;
+import ru.otus.spring.changelog.DatabaseChangelog;
 
-@EnableWebFlux
-@EnableMongock
 @SpringBootApplication
 @EnableReactiveMongoRepositories
 public class Hw11 {
 
     public static void main(String[] args) {
-        SpringApplication.run(Hw11.class);
+        ConfigurableApplicationContext context = SpringApplication.run(Hw11.class);
+        DatabaseChangelog dbInitializer = context.getBean(DatabaseChangelog.class);
+        dbInitializer.insertEntities();
     }
 
 }

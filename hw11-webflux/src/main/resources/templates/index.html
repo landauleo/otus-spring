@@ -148,9 +148,9 @@
 
             options.forEach(option => {
                 const optionElement = document.createElement('option');
-                optionElement.value = option;
-                optionElement.textContent = option;
-                if (book && (book.genre === option || book.author === option)) {
+                optionElement.value = option.name;
+                optionElement.textContent = option.name;
+                if (book && (book.genre === option.name || book.author === option.name)) {
                     optionElement.selected = true;
                 }
                 selectElement.appendChild(optionElement);
