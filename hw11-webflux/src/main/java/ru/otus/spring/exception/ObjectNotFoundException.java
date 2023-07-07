@@ -1,7 +1,11 @@
 package ru.otus.spring.exception;
 
-class ObjectNotFoundException extends RuntimeException{
+public class ObjectNotFoundException extends RuntimeException {
 
-    ObjectNotFoundException() {
+    public ObjectNotFoundException() {
+    }
+
+    public ObjectNotFoundException(String message) {
+        super(message);
     }
 }

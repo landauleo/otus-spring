@@ -19,8 +19,11 @@ public class Genre {
 
     private String name;
 
+    public Genre(ObjectId id) {
+        this.id = id;
+    }
+
     public Genre(String name) {
         this.name = name;
     }
-
 }

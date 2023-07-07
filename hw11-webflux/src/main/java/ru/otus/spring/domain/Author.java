@@ -18,6 +18,10 @@ public class Author {
 
     private String name;
 
+    public Author(ObjectId id) {
+        this.id = id;
+    }
+
     public Author(String name) {
         this.name = name;
     }

@@ -1,19 +1,14 @@
 spring:
-  mongodb:
-    embedded:
-      version: 4.0.2
-  main:
-    allow-circular-references: true
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
   data:
     mongodb:
+      uri: mongodb://root:prisma@localhost:27017
       database: book
-  sql:
-    init:
-      mode: always
-de:
-  flapdoodle:
-    mongodb:
-      embedded:
-        version: 4.0.2
-mongock:
-  enabled: false
+      authentication-database: admin
+
+logging:
+  level:
+    root: INFO

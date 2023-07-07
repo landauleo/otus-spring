@@ -5,27 +5,21 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
-import ru.otus.spring.domain.Book;
+import ru.otus.spring.domain.Author;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BookDto {
+public class AuthorDto {
 
     private String id;
 
     private String name;
 
-    private GenreDto genre;
-
-    private AuthorDto author;
-
-    public static BookDto toDto(Book entity) {
-        BookDto dto = new BookDto();
+    public static AuthorDto toDto(Author entity) {
+        AuthorDto dto = new AuthorDto();
         dto.setId(entity.getId() == null ? new ObjectId().toString() : entity.getId().toString());
         dto.setName(entity.getName());
-        dto.setAuthor(AuthorDto.toDto(entity.getAuthor()));
-        dto.setGenre(GenreDto.toDto(entity.getGenre()));
         return dto;
     }
 

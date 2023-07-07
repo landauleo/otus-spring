@@ -28,5 +28,4 @@ public class Book {
         this.genre = genre;
         this.author = author;
     }
-
 }

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8"/>
     <title>List of all books</title>
-    <link rel="stylesheet" th:href="@{/styles/css/style.css}"/>
-    <link rel="icon" type="image/x-icon" th:href="@{/images/favicon.ico}">
+    <link rel="stylesheet" href="/static/css/style.css"/>
+    <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
 </head>
 <body>
 <section>
@@ -85,8 +85,8 @@
                     <tr>
                         <td>${book.id}</td>
                         <td>${book.name}</td>
-                        <td>${book.genre}</td>
-                        <td>${book.author}</td>
+                        <td>${book.genre.name}</td>
+                        <td>${book.author.name}</td>
                         <td>
                             <div class="actions">
 <!--                            позволяет интерполировать значение переменной book в строку, без JSON.stringify не работает-->
@@ -148,9 +148,9 @@
 
             options.forEach(option => {
                 const optionElement = document.createElement('option');
-                optionElement.value = option;
-                optionElement.textContent = option;
-                if (book && (book.genre === option || book.author === option)) {
+                optionElement.value = option.id;
+                optionElement.textContent = option.name;
+                if (book && (book.genre.id === option.id || book.author.id === option.id)) {
                     optionElement.selected = true;
                 }
                 selectElement.appendChild(optionElement);
@@ -168,22 +168,24 @@
     function saveBook() {
         const id = document.getElementById('book-id-input').value;
         const name = document.getElementById('book-name-input').value;
-        const genre = document.getElementById('book-genre-select').value;
-        const author = document.getElementById('book-author-select').value;
+        const genreId = document.getElementById('book-genre-select').value;
+        const authorId = document.getElementById('book-author-select').value;
 
-        const newBook = {
-            id: id,
+        const book = {
             name: name,
-            genre: genre,
-            author: author
+            genreId: genreId,
+            authorId: authorId
         };
 
-        fetch(`${targetUrl}/api/book`, {
-            method: 'POST',
+        const url = id ? `${targetUrl}/api/book/${id}` : `${targetUrl}/api/book`;
+        const method = id ? 'PUT' : 'POST';
+
+        fetch(url, {
+            method: method,
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(newBook)
+            body: JSON.stringify(book)
         })
             .then(response => {
                 if (response.ok) {

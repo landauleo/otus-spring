@@ -5,36 +5,9 @@ spring:
         enabled: true
   data:
     mongodb:
-      port: 0 # when flapdoodle using
+      uri: mongodb://root:prisma@localhost:27017
       database: book
-      retryWrites: false
-      uri: mongodb://localhost:27017/book?retryWrites=false
-      transactional: false
-
-#  mongodb:
-#    embedded:
-#      version: 4.8.2
-
-de:
-  flapdoodle:
-    mongodb:
-      embedded:
-        version: 4.0.2
-
-mongock:
-  runner-type: "ApplicationRunner" # default -> тип запуска Mongock. В данном случае используется ApplicationRunner -> Mongock будет запускаться как часть приложения при его запуске
-  #runner-type: "InitializingBean" # альтернативный тип запуска -> Mongock будет запускаться как InitializingBean внутри контейнера Spring
-  #эта property позволила не писать @EnableMongock -> ибо подход с аннотацией требует MongoTemplate, MongoTransactionManager to be injected in the Spring context
-  migration-scan-package:
-    - ru.otus.spring.mongock.changelog
-#  change-logs-scan-package:
-#    - ru.otus.spring.mongock.changelog
-  mongo-db:
-    transactional: false
-    retry-writes: false
-    write-concern:
-      journal: false #отключить журналирование при записи данных в MongoDB. Журналирование может использоваться для обеспечения надежности и восстановления данных
-    read-concern: local #это опция конфигурации, указывающая, как Mongock будет выполнять операции чтения данных из MongoDB
+      authentication-database: admin
 
 logging:
   level:
