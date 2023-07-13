@@ -3,11 +3,24 @@ spring:
     hiddenmethod:
       filter:
         enabled: true
+#  data:
+#    mongodb:
+#      uri: mongodb://root:prisma@localhost:27017
+#      database: book
+#      authentication-database: admin
   data:
     mongodb:
-      uri: mongodb://root:prisma@localhost:27017
+      port: 0 # when flapdoodle using
       database: book
-      authentication-database: admin
+  mongodb:
+    embedded:
+      version: 4.0.2
+
+de:
+  flapdoodle:
+    mongodb:
+      embedded:
+        version: 4.0.2
 
 logging:
   level:
