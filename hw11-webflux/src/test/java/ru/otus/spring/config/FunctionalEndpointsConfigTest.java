@@ -56,8 +56,7 @@ class FunctionalEndpointsConfigTest {
 
     @BeforeEach
     void setUp() {
-        dbInitializer.clearDb();
-        dbInitializer.insertEntities();
+        dbInitializer.initialize();
     }
 
     @Test

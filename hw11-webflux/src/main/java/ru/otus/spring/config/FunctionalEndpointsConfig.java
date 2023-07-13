@@ -49,7 +49,6 @@ public class FunctionalEndpointsConfig {
     @Value("classpath:/templates/index.html")
     private Resource index;
 
-
     @Bean
     public RouterFunction<ServerResponse> authorRoutes() {
         return route().GET("/api/author", accept(APPLICATION_JSON),

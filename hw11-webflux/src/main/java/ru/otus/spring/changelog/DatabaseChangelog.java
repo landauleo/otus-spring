@@ -21,35 +21,29 @@ public class DatabaseChangelog {
     private final GenreRepository genreRepository;
 
     @PostConstruct
-    public void initialize(){
-        clearDb();
-        insertEntities();
-    }
-
-    public void clearDb() {
-        bookRepository.deleteAll().subscribe();
-        authorRepository.deleteAll().subscribe();
-        genreRepository.deleteAll().subscribe();
-    }
-
-    public void insertEntities() {
+    public void initialize() {
         Genre poem = new Genre("poem");
         Genre fable = new Genre("fable");
         Genre fantasy = new Genre("fantasy");
         Genre crime = new Genre("crime");
         Genre drama = new Genre("drama");
-        genreRepository.saveAll(List.of(poem, fable, fantasy, crime, drama)).collectList().block();
 
         Author larsson = new Author("Stieg Larsson");
         Author tolkien = new Author("J.R.R. Tolkien");
         Author adams = new Author("Douglas Adams");
         Author yoshimoto = new Author("Banana Yoshimoto");
-        authorRepository.saveAll(List.of(larsson, tolkien, adams, yoshimoto)).collectList().block();
 
         Book sleeping = new Book("sleeping", poem, yoshimoto);
         Book amrita = new Book("Amrita", poem, yoshimoto);
         Book np = new Book("N.P.", poem, yoshimoto);
-        bookRepository.saveAll(List.of(sleeping, amrita, np)).collectList().block();
+
+        bookRepository.deleteAll()
+                .thenMany(authorRepository.deleteAll())
+                .thenMany(genreRepository.deleteAll())
+                .thenMany(genreRepository.saveAll(List.of(poem, fable, fantasy, crime, drama)))
+                .thenMany(authorRepository.saveAll(List.of(larsson, tolkien, adams, yoshimoto)))
+                .thenMany(bookRepository.saveAll(List.of(sleeping, amrita, np)))
+                .blockLast();
     }
 
 }
