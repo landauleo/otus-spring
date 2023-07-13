@@ -12,3 +12,9 @@ spring:
 logging:
   level:
     root: INFO
+
+de:
+  flapdoodle:
+    mongodb:
+      embedded:
+        version: 4.0.2

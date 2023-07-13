@@ -2,6 +2,7 @@ package ru.otus.spring.changelog;
 
 import java.util.List;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.otus.spring.domain.Author;
@@ -18,6 +19,12 @@ public class DatabaseChangelog {
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
     private final GenreRepository genreRepository;
+
+    @PostConstruct
+    public void initialize(){
+        clearDb();
+        insertEntities();
+    }
 
     public void clearDb() {
         bookRepository.deleteAll().subscribe();
