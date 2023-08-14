@@ -1,0 +1,22 @@
+spring:
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+  data:
+    mongodb:
+      port: 0 # when flapdoodle using
+      database: book
+  mongodb:
+    embedded:
+      version: 4.0.2
+
+de:
+  flapdoodle:
+    mongodb:
+      embedded:
+        version: 4.0.2
+
+logging:
+  level:
+    root: INFO
