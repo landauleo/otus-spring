@@ -22,13 +22,11 @@ public class SecurityConfiguration {
                 .and()
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/error", "/styles/css/**", "/images/**").permitAll()
-//                        .requestMatchers(HttpMethod.POST,"/api/**").authenticated()
-//                        .requestMatchers(HttpMethod.DELETE,"/api/**").authenticated()
-                        .requestMatchers("/api/**", "/").authenticated()
+                        .requestMatchers("/api/**", "/index").authenticated()
                         .anyRequest().denyAll()
                 )
                 .formLogin()
-                .defaultSuccessUrl("/", true)
+                .defaultSuccessUrl("/index", true)
                 .failureForwardUrl("/error");
 
         return httpSecurity.build();
