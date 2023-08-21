@@ -27,6 +27,7 @@
         <module>hw09-mvc</module>
         <module>hw10-ajax</module>
         <module>hw11-webflux</module>
+        <module>hw12-auth</module>
     </modules>
 
 </project>
