@@ -21,7 +21,7 @@ public class SecurityConfiguration {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
                 .and()
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/error", "/styles/css/**", "/images/**").permitAll()
+                        .requestMatchers("/error", "/static/**").permitAll()
                         .requestMatchers("/api/**", "/index").authenticated()
                         .anyRequest().denyAll()
                 )
