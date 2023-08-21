@@ -1,4 +1,4 @@
-package ru.otus.spring.controller;
+package ru.otus.spring;
 
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -9,14 +9,10 @@ import ru.otus.spring.repository.CommentRepository;
 import ru.otus.spring.repository.GenreRepository;
 import ru.otus.spring.repository.UserRepository;
 import ru.otus.spring.service.AuthorService;
-import ru.otus.spring.service.BookService;
 import ru.otus.spring.service.GenreService;
 
 @Component
-public class TestConfig {
-
-    @MockBean
-    private BookService bookService;
+public class ControllerTestConfig {
 
     @MockBean
     private AuthorService authorService;
@@ -41,4 +37,5 @@ public class TestConfig {
 
     @MockBean
     private MongoTemplate mongoTemplate;
+
 }

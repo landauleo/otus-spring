@@ -1,115 +1,102 @@
 package ru.otus.spring.controller;
 
+import java.util.List;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.otus.spring.ControllerTestConfig;
 import ru.otus.spring.controller.dto.BookDto;
+import ru.otus.spring.domain.Author;
+import ru.otus.spring.domain.Book;
+import ru.otus.spring.domain.Genre;
+import ru.otus.spring.service.BookService;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.times;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Import(TestConfig.class)
+@Import(ControllerTestConfig.class)
 @DisplayName("Controller для работы с книгами")
 @WebMvcTest(controllers = BookController.class)
 class BookControllerTest {
 
-    private static final ObjectId ID = new ObjectId("645850e49269b4382292c9b8");
-    private static final BookDto BOOK_TO_CREATE = new BookDto(null, "Amok", "novella", "Stefan Zweig");
-    private static final BookDto BOOK_TO_EDIT = new BookDto(ID.toString(), "Unbekannter", "novella", "Stefan Zweig");
     @Autowired
     private MockMvc mvc;
+
     @Autowired
     private ObjectMapper objectMapper;
 
+    @MockBean
+    private BookService bookService;
+
+    private static final ObjectId id = new ObjectId("645850e49269b4382292c9b8");
+
     @Test
-    @DisplayName("Отдает 401 статус при запросе на получение всех книг для неавторизованных пользователей")
-    void getAllBooksUnauthorizedStatusTest() throws Exception {
+    @WithMockUser
+    void getAllBooksTest() throws Exception {
+        Book book = new Book(id, "Amok", new Genre("novella"), new Author("Stefan Zweig"));
+        BookDto bookDto = new BookDto(id.toString(), "Amok", "novella", "Stefan Zweig");
+        given(bookService.getAll()).willReturn(List.of(book));
+
         mvc.perform(get("/api/book"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(List.of(bookDto))));
 
-                .andExpect(status().isUnauthorized());
+        then(bookService).should(times(1)).getAll();
     }
 
     @Test
     @WithMockUser
-    @DisplayName("Отдает 200 статус при запросе на получение всех книг для авторизованных пользователей")
-    void getAllBooksOkStatusTest() throws Exception {
-        mvc.perform(get("/api/book"))
+    void editBookTest() throws Exception {
+        BookDto bookToEdit = new BookDto(id.toString(), "Unbekannter", "novella", "Stefan Zweig");
+        given(bookService.save(id, "Unbekannter", "novella", "Stefan Zweig")).willReturn(id);
 
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    @DisplayName("Отдает 401 статус при запросе на редактирование для неавторизованных пользователей")
-    void editBookUnauthorizedStatusTest() throws Exception {
         mvc.perform(post("/api/book")
-                        .content(objectMapper.writeValueAsString(BOOK_TO_EDIT))
+                        .content(objectMapper.writeValueAsString(bookToEdit))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .with(csrf())) //без этого не работают все методы кроме GET https://docs.spring.io/spring-security/reference/servlet/test/mockmvc/csrf.html
+                        .with(csrf()))
+                .andExpect(status().isOk());
 
-                .andExpect(status().isUnauthorized());
+        then(bookService).should(times(1)).save(id, bookToEdit.getName(), bookToEdit.getGenre(), bookToEdit.getAuthor());
     }
 
     @Test
     @WithMockUser
-    @DisplayName("Отдает 200 статус при запросе на редактирование для авторизованных пользователей")
-    void editBookOkStatusTest() throws Exception {
-        mvc.perform(post("/api/book")
-                        .content(objectMapper.writeValueAsString(BOOK_TO_EDIT))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .with(csrf())) //без этого не работают все методы кроме GET https://docs.spring.io/spring-security/reference/servlet/test/mockmvc/csrf.html
-                .andExpect(status().isOk());
-    }
+    void deleteTest() throws Exception {
+        mvc.perform(delete("/api/book/" + id).with(csrf())).andExpect(status().isOk());
 
-    @Test
-    @DisplayName("Отдает 401 статус при запросе на удаление для неавторизованных пользователей")
-    void deleteBookUnauthorizedStatusTest() throws Exception {
-        mvc.perform(delete("/api/book/" + ID)
-                        .with(csrf())) //без этого не работают все методы кроме GET https://docs.spring.io/spring-security/reference/servlet/test/mockmvc/csrf.html
-
-                .andExpect(status().isUnauthorized());
+        then(bookService).should(times(1)).deleteById(id);
     }
 
     @Test
     @WithMockUser
-    @DisplayName("Отдает 200 статус при запросе на удаление для авторизованных пользователей")
-    void deleteBookOkStatusTest() throws Exception {
-        mvc.perform(delete("/api/book/" + ID)
-                        .with(csrf())) //без этого не работают все методы кроме GET https://docs.spring.io/spring-security/reference/servlet/test/mockmvc/csrf.html
+    void createBookTest() throws Exception {
+        BookDto bookToCreate = new BookDto(null, "Amok", "novella", "Stefan Zweig");
 
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    @DisplayName("Отдает 401 статус при запросе на создание для неавторизованных пользователей")
-    void createBookUnauthorizedStatusTest() throws Exception {
         mvc.perform(post("/api/book")
-                        .content(objectMapper.writeValueAsString(BOOK_TO_CREATE))
+                        .content(objectMapper.writeValueAsString(bookToCreate))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .with(csrf())) //без этого не работают все методы кроме GET https://docs.spring.io/spring-security/reference/servlet/test/mockmvc/csrf.html
-
-                .andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    @WithMockUser
-    @DisplayName("Отдает 200 статус при запросе на удаление для авторизованных пользователей")
-    void createBookOkStatusTest() throws Exception {
-        mvc.perform(post("/api/book")
-                        .content(objectMapper.writeValueAsString(BOOK_TO_CREATE))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .with(csrf())) //без этого не работают все методы кроме GET https://docs.spring.io/spring-security/reference/servlet/test/mockmvc/csrf.html
-
+                        .with(csrf()))
                 .andExpect(status().isOk());
+
+        then(bookService).should(times(1)).save(any(ObjectId.class), eq(bookToCreate.getName()), eq(bookToCreate.getGenre()), eq(bookToCreate.getAuthor()));
     }
 
 }
