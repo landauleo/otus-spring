@@ -11,6 +11,7 @@ import ru.otus.spring.repository.GenreRepository;
 import ru.otus.spring.repository.UserRepository;
 import ru.otus.spring.service.AuthorService;
 import ru.otus.spring.service.GenreService;
+import ru.otus.spring.service.UserService;
 
 @Component
 public class ControllerTestConfig {
@@ -41,5 +42,8 @@ public class ControllerTestConfig {
 
     @MockBean
     private MongoTemplate mongoTemplate;
+
+    @MockBean
+    private UserService userService;
 
 }

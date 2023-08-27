@@ -6,16 +6,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import ru.otus.spring.ControllerTestConfig;
@@ -31,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(ControllerTestConfig.class)
 @DisplayName("Controller для проверки работы аутентификации")
 @WebMvcTest(controllers = {BookController.class, GenreController.class, AuthorController.class, MainController.class})
-@AutoConfigureMockMvc
+@ExtendWith(SpringExtension.class)
 class SecurityCheckControllerTest {
 
     @Autowired
@@ -47,6 +48,14 @@ class SecurityCheckControllerTest {
     private static final BookDto BOOK_TO_CREATE = new BookDto(null, "Amok", "novella", "Stefan Zweig");
     private static final BookDto BOOK_TO_EDIT = new BookDto(ID.toString(), "Unbekannter", "novella", "Stefan Zweig");
 
+
+    @Test
+    @WithMockUser(authorities = {"ROLE_ADMIN"})
+    @DisplayName("Доступ на /books/create открыт для пользователя с authorities ROLE_ADMIN")
+    public void test() throws Exception {
+        mvc.perform(get("/api/book"))
+                .andExpect(status().isForbidden());
+    }
 
     @DisplayName("Отдает 401 статус при запросах для неавторизованных пользователей")
     @ParameterizedTest
@@ -94,8 +103,9 @@ class SecurityCheckControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = {"LIBRARIAN"})
+//    @WithMockUser(roles = {"LIBRARIAN"})
 //    @WithMockUser(authorities = {"ROLE_LIBRARIAN"})
+    @WithMockUser(username = "user1", password = "pwd", authorities = "ROLE_LIBRARIAN")
     @DisplayName("Отдает 200 статус при запросах для юзеров с ролью ROLE_LIBRARIAN")
     void testDeleteMethodsOk() throws Exception {
         mvc.perform(delete("/api/book/" + ID))

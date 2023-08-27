@@ -2,7 +2,6 @@ package ru.otus.spring.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -24,9 +23,10 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/error", "/static/**").permitAll()
                         .requestMatchers( "/index").authenticated()
-                        .requestMatchers(HttpMethod.DELETE,"/api/**").hasAuthority("ROLE_LIBRARIAN")
-                        .requestMatchers(HttpMethod.POST,"/api/**").hasAuthority("ROLE_LIBRARIAN")
-                        .requestMatchers(HttpMethod.GET,"/api/**").hasAnyAuthority("ROLE_VISITOR", "ROLE_LIBRARIAN")
+                        .requestMatchers("/api/**").hasAuthority("ROLE_LIBRARIAN")
+//                        .requestMatchers(HttpMethod.DELETE,"/api/**").hasAuthority("ROLE_LIBRARIAN")
+//                        .requestMatchers(HttpMethod.POST,"/api/**").hasAuthority("ROLE_LIBRARIAN")
+//                        .requestMatchers(HttpMethod.GET,"/api/**").hasAnyAuthority("ROLE_VISITOR", "ROLE_LIBRARIAN")
                         .anyRequest().denyAll()
                 )
                 .formLogin()
