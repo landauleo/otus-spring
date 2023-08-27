@@ -22,7 +22,7 @@ public class SecurityConfiguration {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
                 .and()
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/error", "/static/**", "/css/**", "/images/**", "/login/**").permitAll()
+                        .requestMatchers("/error", "/static/**", "/css/**", "/images/**", "/login").permitAll()
                         .requestMatchers( "/index").authenticated()
                         .requestMatchers(HttpMethod.DELETE,"/api/**").hasAuthority("ROLE_LIBRARIAN")
                         .requestMatchers(HttpMethod.POST,"/api/**").hasAuthority("ROLE_LIBRARIAN")

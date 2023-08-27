@@ -1,5 +1,6 @@
 package ru.otus.spring.controller;
 
+import java.util.Set;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,22 +16,25 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import ru.otus.spring.ControllerTestConfig;
+import ru.otus.spring.config.SecurityConfiguration;
 import ru.otus.spring.controller.dto.BookDto;
+import ru.otus.spring.domain.Authority;
 import ru.otus.spring.service.BookService;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Import(ControllerTestConfig.class)
+//ОЧЕНЬ БОЛЕЗНЕННЫЙ И НЕОЧЕВИДНЫЙ МОМЕНТ: WebMvcTest не поднимает весь контекст, соответственно свой кастомный SecurityConfiguration класс тоже нужно подтягивать
+//если этого не сделать то все юзеры получают доступы до всех ручек, какие бы authorities в @WithMockUser ни были прописаны
+@Import({ControllerTestConfig.class, SecurityConfiguration.class})
 @DisplayName("Controller для проверки работы аутентификации")
 @WebMvcTest(controllers = {BookController.class, GenreController.class, AuthorController.class, MainController.class})
 @ExtendWith(SpringExtension.class)
@@ -49,79 +53,89 @@ class SecurityCheckControllerTest {
     private static final BookDto BOOK_TO_CREATE = new BookDto(null, "Amok", "novella", "Stefan Zweig");
     private static final BookDto BOOK_TO_EDIT = new BookDto(ID.toString(), "Unbekannter", "novella", "Stefan Zweig");
 
+    private UserRequestPostProcessor librarian = user("Мариванна").authorities(Set.of(new Authority("ROLE_LIBRARIAN")));
+    private UserRequestPostProcessor visitor = user("Алёша").authorities(Set.of(new Authority("ROLE_VISITOR")));
+    private UserRequestPostProcessor anon = user("Anon").authorities(Set.of(new Authority("ROLE_NOBODY")));
 
+    @DisplayName("Проверяет работу с доступом html-страниц")
     @Test
-    @DisplayName("Отдает 403 статус при запросах для авторизованных пользователей c ролью не ROLE_VISITOR")
-    @WithMockUser(username = "admin", authorities = {"ADMIN", "USER"})
-    void testGetMethodsWrongRole() throws Exception {
-        mvc.perform(get("/api/genre")
-                        .with(csrf().asHeader()))
-                .andExpect(status().isForbidden());
-    }
+    void testGetHtmlPages() throws Exception {
+        mvc.perform(get("/error"))
+                .andExpect(status().isOk());
 
-    @ParameterizedTest
-    @MethodSource("provideArgsForGet")
-    @DisplayName("Отдает 200 статус при запросах для авторизованных пользователей c ролью ROLE_VISITOR")
-    void testGetMethodsOk(MockHttpServletRequestBuilder httpServletRequestBuilder) throws Exception {
-        mvc.perform(httpServletRequestBuilder.with(user("1")))
+        mvc.perform(get("/index"))
+                .andExpect(status().is3xxRedirection());
+
+        mvc.perform(get("/index")
+                        .with(anon))
                 .andExpect(status().isOk());
     }
 
-    @DisplayName("Отдает 401 статус при запросах для неавторизованных пользователей")
+
+    @DisplayName("Проверяет работу GET методов")
     @ParameterizedTest
     @MethodSource("provideArgsForGet")
-    void testGetMethodsUnauthorized(MockHttpServletRequestBuilder httpServletRequestBuilder) throws Exception {
+    void testGetMethods(MockHttpServletRequestBuilder httpServletRequestBuilder) throws Exception {
         mvc.perform(httpServletRequestBuilder)
-                .andExpect(status().isUnauthorized());
-    }
+                .andExpect(status().is3xxRedirection());
 
-    @ParameterizedTest
-    @DisplayName("Отдает 401 статус при запросах для неавторизованных пользователей")
-    @MethodSource("provideArgsForPost")
-    void testPostMethodsUnauthorized(BookDto bookDto) throws Exception {
-        mvc.perform(post("/api/book")
-                        .content(objectMapper.writeValueAsString(bookDto))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .with(csrf())) //без этого не работают все методы кроме GET https://docs.spring.io/spring-security/reference/servlet/test/mockmvc/csrf.html
-
-                .andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    @DisplayName("Отдает 401 статус при запросах для неавторизованных пользователей")
-    void testDeleteMethodsUnauthorized() throws Exception {
-        mvc.perform(delete("/api/book/" + ID))
-
-                .andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    @WithMockUser(authorities = {"ROLE_VISITOR"})
-    @DisplayName("Отдает 403 статус при запросах для юзеров без роли ROLE_LIBRARIAN")
-    void testDeleteMethodsForbidden() throws Exception {
-        mvc.perform(delete("/api/book/" + ID)) //без этого не работают все методы кроме GET https://docs.spring.io/spring-security/reference/servlet/test/mockmvc/csrf.html
+        mvc.perform(httpServletRequestBuilder
+                        .with(anon))
                 .andExpect(status().isForbidden());
-    }
 
-    @Test
-//    @WithMockUser(roles = {"LIBRARIAN"})
-//    @WithMockUser(authorities = {"ROLE_LIBRARIAN"})
-    @WithMockUser(username = "user1", password = "pwd", authorities = "ROLE_LIBRARIAN")
-    @DisplayName("Отдает 200 статус при запросах для юзеров с ролью ROLE_LIBRARIAN")
-    void testDeleteMethodsOk() throws Exception {
-        mvc.perform(delete("/api/book/" + ID))
+        mvc.perform(httpServletRequestBuilder
+                        .with(librarian))
+                .andExpect(status().isOk());
+
+        mvc.perform(httpServletRequestBuilder
+                        .with(visitor))
                 .andExpect(status().isOk());
     }
 
+    @DisplayName("Проверяет работу POST методов")
     @ParameterizedTest
-    @DisplayName("Отдает 200 статус при запросах для авторизованных пользователей")
-    @WithMockUser(authorities = "ROLE_VISITOR")
     @MethodSource("provideArgsForPost")
-    void testPostMethodsOk(BookDto bookDto) throws Exception {
+    void testPostMethods(BookDto bookDto) throws Exception {
         mvc.perform(post("/api/book")
                         .content(objectMapper.writeValueAsString(bookDto))
                         .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is3xxRedirection());
 
+        mvc.perform(post("/api/book")
+                        .with(anon)
+                        .content(objectMapper.writeValueAsString(bookDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden());
+
+        mvc.perform(post("/api/book")
+                        .with(visitor)
+                        .content(objectMapper.writeValueAsString(bookDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden());
+
+        mvc.perform(post("/api/book")
+                        .with(librarian)
+                        .content(objectMapper.writeValueAsString(bookDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @DisplayName("Проверяет работу DELETE методов")
+    @Test
+    void testDeleteMethods() throws Exception {
+        mvc.perform(delete("/api/book" + ID))
+                .andExpect(status().is3xxRedirection());
+
+        mvc.perform(delete("/api/book" + ID)
+                        .with(anon))
+                .andExpect(status().isForbidden());
+
+        mvc.perform(delete("/api/book" + ID)
+                        .with(visitor))
+                .andExpect(status().isForbidden());
+
+        mvc.perform(delete("/api/book/" + ID)
+                        .with(librarian))
                 .andExpect(status().isOk());
     }
 
@@ -136,9 +150,7 @@ class SecurityCheckControllerTest {
         return Stream.of(
                 Arguments.of(get("/api/genre")),
                 Arguments.of(get("/api/book")),
-                Arguments.of(get("/api/author")),
-                Arguments.of(get("/index")),
-                Arguments.of(get("/error"))
+                Arguments.of(get("/api/author"))
         );
     }
 
