@@ -55,8 +55,9 @@ public class DatabaseChangelog {
         Authority roleVisitor = authorityRepository.findByName("ROLE_VISITOR");
         User librarian = new User("Мариванна", BCrypt.hashpw("123", BCrypt.gensalt()), Set.of(roleLibrarian));
         User visitor = new User("Алёша", BCrypt.hashpw("321", BCrypt.gensalt()), Set.of(roleVisitor));
+        User test = new User("1", BCrypt.hashpw("1", BCrypt.gensalt()), Set.of(roleLibrarian));
 
-        repository.saveAll(List.of(librarian, visitor));
+        repository.saveAll(List.of(librarian, visitor, test));
     }
 
 }

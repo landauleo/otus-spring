@@ -2,6 +2,7 @@ package ru.otus.spring.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -21,12 +22,11 @@ public class SecurityConfiguration {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
                 .and()
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/error", "/static/**").permitAll()
+                        .requestMatchers("/error", "/static/**", "/css/**", "/images/**", "/login/**").permitAll()
                         .requestMatchers( "/index").authenticated()
-                        .requestMatchers("/api/**").hasAuthority("ROLE_LIBRARIAN")
-//                        .requestMatchers(HttpMethod.DELETE,"/api/**").hasAuthority("ROLE_LIBRARIAN")
-//                        .requestMatchers(HttpMethod.POST,"/api/**").hasAuthority("ROLE_LIBRARIAN")
-//                        .requestMatchers(HttpMethod.GET,"/api/**").hasAnyAuthority("ROLE_VISITOR", "ROLE_LIBRARIAN")
+                        .requestMatchers(HttpMethod.DELETE,"/api/**").hasAuthority("ROLE_LIBRARIAN")
+                        .requestMatchers(HttpMethod.POST,"/api/**").hasAuthority("ROLE_LIBRARIAN")
+                        .requestMatchers(HttpMethod.GET,"/api/**").hasAnyAuthority("ROLE_VISITOR", "ROLE_LIBRARIAN")
                         .anyRequest().denyAll()
                 )
                 .formLogin()

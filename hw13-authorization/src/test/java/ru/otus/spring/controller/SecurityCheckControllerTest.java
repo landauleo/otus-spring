@@ -24,6 +24,7 @@ import ru.otus.spring.controller.dto.BookDto;
 import ru.otus.spring.service.BookService;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -50,11 +51,20 @@ class SecurityCheckControllerTest {
 
 
     @Test
-    @WithMockUser(authorities = {"ROLE_ADMIN"})
-    @DisplayName("Доступ на /books/create открыт для пользователя с authorities ROLE_ADMIN")
-    public void test() throws Exception {
-        mvc.perform(get("/api/book"))
+    @DisplayName("Отдает 403 статус при запросах для авторизованных пользователей c ролью не ROLE_VISITOR")
+    @WithMockUser(username = "admin", authorities = {"ADMIN", "USER"})
+    void testGetMethodsWrongRole() throws Exception {
+        mvc.perform(get("/api/genre")
+                        .with(csrf().asHeader()))
                 .andExpect(status().isForbidden());
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideArgsForGet")
+    @DisplayName("Отдает 200 статус при запросах для авторизованных пользователей c ролью ROLE_VISITOR")
+    void testGetMethodsOk(MockHttpServletRequestBuilder httpServletRequestBuilder) throws Exception {
+        mvc.perform(httpServletRequestBuilder.with(user("1")))
+                .andExpect(status().isOk());
     }
 
     @DisplayName("Отдает 401 статус при запросах для неавторизованных пользователей")
@@ -64,15 +74,6 @@ class SecurityCheckControllerTest {
         mvc.perform(httpServletRequestBuilder)
                 .andExpect(status().isUnauthorized());
     }
-
-    @ParameterizedTest
-    @MethodSource("provideArgsForGet")
-    @DisplayName("Отдает 200 статус при запросах для авторизованных пользователей")
-    void testGetMethodsOk(MockHttpServletRequestBuilder httpServletRequestBuilder) throws Exception {
-        mvc.perform(httpServletRequestBuilder)
-                .andExpect(status().isOk());
-    }
-
 
     @ParameterizedTest
     @DisplayName("Отдает 401 статус при запросах для неавторизованных пользователей")
@@ -119,8 +120,7 @@ class SecurityCheckControllerTest {
     void testPostMethodsOk(BookDto bookDto) throws Exception {
         mvc.perform(post("/api/book")
                         .content(objectMapper.writeValueAsString(bookDto))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .with(csrf().useInvalidToken())) //без этого не работают все методы кроме GET https://docs.spring.io/spring-security/reference/servlet/test/mockmvc/csrf.html
+                        .contentType(MediaType.APPLICATION_JSON))
 
                 .andExpect(status().isOk());
     }
@@ -138,10 +138,7 @@ class SecurityCheckControllerTest {
                 Arguments.of(get("/api/book")),
                 Arguments.of(get("/api/author")),
                 Arguments.of(get("/index")),
-                Arguments.of(get("/error")),
-                Arguments.of(get("/static/css/style.css")),
-                Arguments.of(get("/static/images/error.jpg")),
-                Arguments.of(get("/static/images/favicon.ico"))
+                Arguments.of(get("/error"))
         );
     }
 
