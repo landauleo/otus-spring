@@ -40,9 +40,7 @@ public class BookServiceImpl implements BookService {
 
     @Transactional(readOnly = true)
     public Book getById(ObjectId id) {
-        return bookRepository.findById(id).orElseThrow(() -> {
-            throw new EmptyResultDataAccessException("No book with id: " + id, 1);
-        });
+        return bookRepository.findById(id).orElseThrow(() -> new EmptyResultDataAccessException("No book with id: " + id, 1));
     }
 
     @Transactional(readOnly = true)

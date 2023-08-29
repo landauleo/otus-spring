@@ -33,9 +33,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Transactional(readOnly = true)
     public Comment getById(ObjectId id) {
-        return commentRepository.findById(id).orElseThrow(() -> {
-            throw new EmptyResultDataAccessException("No comment with id: " + id, 1);
-        });
+        return commentRepository.findById(id).orElseThrow(() -> new EmptyResultDataAccessException("No comment with id: " + id, 1));
     }
 
     @Transactional

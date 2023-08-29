@@ -6,7 +6,6 @@ import java.util.stream.Stream;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -19,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import ru.otus.spring.ControllerTestConfig;
 import ru.otus.spring.config.SecurityConfiguration;
@@ -52,105 +52,63 @@ class SecurityCheckControllerTest {
     private static final ObjectId ID = new ObjectId("645850e49269b4382292c9b8");
     private static final BookDto BOOK_TO_CREATE = new BookDto(null, "Amok", "novella", "Stefan Zweig");
     private static final BookDto BOOK_TO_EDIT = new BookDto(ID.toString(), "Unbekannter", "novella", "Stefan Zweig");
+    private static final String BOOK_API = "/api/book";
+    private static final String GENRE_API = "/api/genre";
+    private static final String AUTHOR_API = "/api/author";
 
-    private UserRequestPostProcessor librarian = user("Мариванна").authorities(Set.of(new Authority("ROLE_LIBRARIAN")));
-    private UserRequestPostProcessor visitor = user("Алёша").authorities(Set.of(new Authority("ROLE_VISITOR")));
-    private UserRequestPostProcessor anon = user("Anon").authorities(Set.of(new Authority("ROLE_NOBODY")));
+    private static final UserRequestPostProcessor librarian = user("Мариванна").authorities(Set.of(new Authority("ROLE_LIBRARIAN")));
+    private static final UserRequestPostProcessor visitor = user("Алёша").authorities(Set.of(new Authority("ROLE_VISITOR")));
+    private static final UserRequestPostProcessor anon = user("Anon").authorities(Set.of(new Authority("ROLE_NOBODY")));
 
-    @DisplayName("Проверяет работу с доступом html-страниц")
-    @Test
-    void testGetHtmlPages() throws Exception {
-        mvc.perform(get("/error"))
-                .andExpect(status().isOk());
-
-        mvc.perform(get("/index"))
-                .andExpect(status().is3xxRedirection());
-
-        mvc.perform(get("/index")
-                        .with(anon))
-                .andExpect(status().isOk());
-    }
-
-
-    @DisplayName("Проверяет работу GET методов")
+    @DisplayName("Проверяет работу всех методов")
     @ParameterizedTest
-    @MethodSource("provideArgsForGet")
-    void testGetMethods(MockHttpServletRequestBuilder httpServletRequestBuilder) throws Exception {
-        mvc.perform(httpServletRequestBuilder)
-                .andExpect(status().is3xxRedirection());
+    @MethodSource("provideArgs")
+    void testGetHtmlPages(MockHttpServletRequestBuilder request, ResultMatcher status, BookDto bookDto) throws Exception {
+        mvc.perform(bookDto != null ? request.content(objectMapper.writeValueAsString(bookDto)).contentType(MediaType.APPLICATION_JSON)
+                        : request)
 
-        mvc.perform(httpServletRequestBuilder
-                        .with(anon))
-                .andExpect(status().isForbidden());
-
-        mvc.perform(httpServletRequestBuilder
-                        .with(librarian))
-                .andExpect(status().isOk());
-
-        mvc.perform(httpServletRequestBuilder
-                        .with(visitor))
-                .andExpect(status().isOk());
+                .andExpect(status);
     }
 
-    @DisplayName("Проверяет работу POST методов")
-    @ParameterizedTest
-    @MethodSource("provideArgsForPost")
-    void testPostMethods(BookDto bookDto) throws Exception {
-        mvc.perform(post("/api/book")
-                        .content(objectMapper.writeValueAsString(bookDto))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is3xxRedirection());
-
-        mvc.perform(post("/api/book")
-                        .with(anon)
-                        .content(objectMapper.writeValueAsString(bookDto))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isForbidden());
-
-        mvc.perform(post("/api/book")
-                        .with(visitor)
-                        .content(objectMapper.writeValueAsString(bookDto))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isForbidden());
-
-        mvc.perform(post("/api/book")
-                        .with(librarian)
-                        .content(objectMapper.writeValueAsString(bookDto))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-    }
-
-    @DisplayName("Проверяет работу DELETE методов")
-    @Test
-    void testDeleteMethods() throws Exception {
-        mvc.perform(delete("/api/book" + ID))
-                .andExpect(status().is3xxRedirection());
-
-        mvc.perform(delete("/api/book" + ID)
-                        .with(anon))
-                .andExpect(status().isForbidden());
-
-        mvc.perform(delete("/api/book" + ID)
-                        .with(visitor))
-                .andExpect(status().isForbidden());
-
-        mvc.perform(delete("/api/book/" + ID)
-                        .with(librarian))
-                .andExpect(status().isOk());
-    }
-
-    private static Stream<Arguments> provideArgsForPost() {
+    private static Stream<Arguments> provideArgs() {
         return Stream.of(
-                Arguments.of(BOOK_TO_CREATE),
-                Arguments.of(BOOK_TO_EDIT)
-        );
-    }
+                Arguments.of(get("/error"), status().isOk(), null),
+                Arguments.of(get("/index"), status().is3xxRedirection(), null),
+                Arguments.of(get("/index").with(anon), status().isOk(), null),
 
-    private static Stream<Arguments> provideArgsForGet() {
-        return Stream.of(
-                Arguments.of(get("/api/genre")),
-                Arguments.of(get("/api/book")),
-                Arguments.of(get("/api/author"))
+                Arguments.of(get(GENRE_API), status().is3xxRedirection(), null),
+                Arguments.of(get(BOOK_API), status().is3xxRedirection(), null),
+                Arguments.of(get(AUTHOR_API), status().is3xxRedirection(), null),
+
+                Arguments.of(get(GENRE_API).with(anon), status().isForbidden(), null),
+                Arguments.of(get(BOOK_API).with(anon), status().isForbidden(), null),
+                Arguments.of(get(AUTHOR_API).with(anon), status().isForbidden(), null),
+
+                Arguments.of(get(GENRE_API).with(visitor), status().isOk(), null),
+                Arguments.of(get(BOOK_API).with(visitor), status().isOk(), null),
+                Arguments.of(get(AUTHOR_API).with(visitor), status().isOk(), null),
+
+                Arguments.of(get(GENRE_API).with(librarian), status().isOk(), null),
+                Arguments.of(get(BOOK_API).with(librarian), status().isOk(), null),
+                Arguments.of(get(AUTHOR_API).with(librarian), status().isOk(), null),
+
+                Arguments.of(post(BOOK_API).contentType(MediaType.APPLICATION_JSON), status().is3xxRedirection(), BOOK_TO_EDIT),
+                Arguments.of(post(BOOK_API).contentType(MediaType.APPLICATION_JSON), status().is3xxRedirection(), BOOK_TO_CREATE),
+
+                Arguments.of(post(BOOK_API).with(anon).contentType(MediaType.APPLICATION_JSON), status().isForbidden(), BOOK_TO_EDIT),
+                Arguments.of(post(BOOK_API).with(anon).contentType(MediaType.APPLICATION_JSON), status().isForbidden(), BOOK_TO_CREATE),
+
+                Arguments.of(post(BOOK_API).with(visitor).contentType(MediaType.APPLICATION_JSON), status().isForbidden(), BOOK_TO_EDIT),
+                Arguments.of(post(BOOK_API).with(visitor).contentType(MediaType.APPLICATION_JSON), status().isForbidden(), BOOK_TO_CREATE),
+
+                Arguments.of(post(BOOK_API).with(librarian).contentType(MediaType.APPLICATION_JSON), status().isOk(), BOOK_TO_EDIT),
+                Arguments.of(post(BOOK_API).with(librarian).contentType(MediaType.APPLICATION_JSON), status().isOk(), BOOK_TO_CREATE),
+
+                Arguments.of(delete(BOOK_API + "/" + ID), status().is3xxRedirection(), null),
+                Arguments.of(delete(BOOK_API + "/" + ID).with(anon), status().isForbidden(), null),
+                Arguments.of(delete(BOOK_API + "/" + ID).with(visitor), status().isForbidden(), null),
+                Arguments.of(delete(BOOK_API + "/" + ID).with(librarian), status().isOk(), null)
+
         );
     }
 
