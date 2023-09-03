@@ -1,40 +1,35 @@
 spring:
-  data:
-    mongodb:
-      port: 27017 # when flapdoodle using
-      database: book
-  mongodb:
-    embedded:
-      # сам spring-boot-starter-data-mongodb тащит версию 4.6.1,
-      # но mac на М1 не переваривает её и бросает ошибку:
-      # osx distribution not supported: GenericFeatureAwareVersion{4.6.1}:Platform{operatingSystem=OS_X, architecture=ARM_64},
-      # с версией ниже всё работает
-      version: 4.0.2
   main:
     allow-circular-references: true
+
+  data:
+    mongodb:
+      uri: mongodb://root:prisma@localhost:27017
+      database: book
+      authentication-database: admin
 
   batch:
     job:
       enabled: false
+    jdbc:
+      initialize-schema: always #https://stackoverflow.com/a/65473668
 
   datasource:
     url: jdbc:h2:mem:db
     driverClassName: org.h2.Driver
+
   sql:
     init:
       mode: always
       data-locations: classpath:data.sql
       schema-locations: classpath:schema.sql
+
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     generate-ddl: false
     hibernate:
       ddl-auto: none
-
     show-sql: true
-  #    properties:
-  #      hibernate:
-  #        enable_lazy_load_no_trans: true
 
   h2:
     console:
@@ -43,14 +38,12 @@ spring:
         web-allow-others: true
       enabled: true
 
-#  shell:
-#    interactive:
-##      enabled: false
-#      enabled: true
+logging:
+  level:
+    root: INFO
 
 de:
   flapdoodle:
     mongodb:
       embedded:
         version: 4.0.2
-

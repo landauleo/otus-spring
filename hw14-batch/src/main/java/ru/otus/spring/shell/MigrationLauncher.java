@@ -31,7 +31,8 @@ public class MigrationLauncher {
         LocalDateTime start = LocalDateTime.now();
         jobLauncher.run(jobOnMigrationSqlToNosql, new JobParameters());
         LocalDateTime end = LocalDateTime.now();
-        log.info("Job migrateSqlToNoSql ended and took " +  Duration.between(start, end).getSeconds() + " sec");
+        log.info("Job migrateSqlToNoSql ended and took " + Duration.between(start, end).getNano() + " nano sec");
         log.info("========================================");
     }
+
 }
