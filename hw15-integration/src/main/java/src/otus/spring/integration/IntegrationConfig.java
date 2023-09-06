@@ -2,13 +2,13 @@ package src.otus.spring.integration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.integration.channel.PublishSubscribeChannel;
 import org.springframework.integration.channel.QueueChannel;
 import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.dsl.MessageChannels;
 import src.otus.spring.service.DeveloperServiceImpl;
 
+//https://docs.spring.io/spring-integration/docs/4.3.12.RELEASE/reference/html/messaging-channels-section.html
 @Configuration
 public class IntegrationConfig {
 
@@ -18,13 +18,13 @@ public class IntegrationConfig {
     }
 
     @Bean
-    public PublishSubscribeChannel middlesChannel() {
-        return MessageChannels.publishSubscribe().get();
+    public QueueChannel middlesChannel() {
+        return MessageChannels.queue(5).get();
     }
 
     @Bean
-    public PublishSubscribeChannel seniorsChannel() {
-        return MessageChannels.publishSubscribe().get();
+    public QueueChannel seniorsChannel() {
+        return MessageChannels.queue(2).get();
     }
 
     @Bean
