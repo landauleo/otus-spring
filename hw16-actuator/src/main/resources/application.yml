@@ -1,0 +1,45 @@
+spring:
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+  data:
+    mongodb:
+      port: 0 # when flapdoodle using
+      database: book
+  mongodb:
+    embedded:
+      version: 4.0.2
+  jmx:
+    enabled: true #for custom HealthIndicator
+
+de:
+  flapdoodle:
+    mongodb:
+      embedded:
+        version: 4.0.2
+
+mongock:
+  runner-type: "ApplicationRunner"
+  change-logs-scan-package:
+    - ru.otus.spring.mongock.changelog
+  mongo-db:
+    write-concern:
+      journal: false
+    read-concern: local
+
+logging:
+  file:
+    name: hw16.log
+  level:
+    root: INFO
+
+management:
+  endpoint:
+    health:
+      show-details: always #to show custom HealthIndicator info
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,logfile #logfile -> returns the contents of the logfile
+
