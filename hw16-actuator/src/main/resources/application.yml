@@ -37,7 +37,7 @@ logging:
 management:
   endpoint:
     health:
-      show-details: always #to show custom HealthIndicator info
+      show-details: always #to show custom HealthIndicator details
   endpoints:
     web:
       exposure:
