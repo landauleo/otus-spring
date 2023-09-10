@@ -25,8 +25,7 @@ public class DataSourceHealthIndicator implements HealthIndicator {
             mongoTemplate.getDb().runCommand(command);
             return Health.up().withDetail("dataSourceOk", "(^____^) It's alright, bro, keep calm and WORK!!!").build();
         } catch (Exception e) {
-            e.printStackTrace();
-            return Health.up().withDetail("dataSourceError", "8 (>_<) 8  Houston, we have a problem").build();
+            return Health.up().withDetail("dataSourceError", "8 (>_<) 8  Houston, we have a problem: " + e.getMessage()).build();
         }
     }
 
