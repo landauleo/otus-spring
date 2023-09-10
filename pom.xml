@@ -31,6 +31,7 @@
         <module>hw13-authorization</module>
         <module>hw14-batch</module>
         <module>hw15-integration</module>
+        <module>hw16-actuator</module>
     </modules>
 
 </project>
