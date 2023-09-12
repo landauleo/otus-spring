@@ -1,0 +1,44 @@
+spring:
+  main:
+    allow-circular-references: true
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+  data:
+    mongodb:
+      uri: mongodb://root:prisma@localhost:27017
+      database: book
+      authentication-database: admin
+  jmx:
+    enabled: true #for custom HealthIndicator
+
+mongock:
+  runner-type: "ApplicationRunner"
+  change-logs-scan-package:
+    - ru.otus.spring.mongock.changelog
+  mongo-db:
+    write-concern:
+      journal: false
+    read-concern: local
+
+logging:
+  file:
+    name: hw16.log
+  level:
+    root: INFO
+
+management:
+  endpoint:
+    health:
+      show-details: always #to show custom HealthIndicator details
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,logfile #logfile -> returns the contents of the logfile
+
+de:
+  flapdoodle:
+    mongodb:
+      embedded:
+        version: 4.0.2

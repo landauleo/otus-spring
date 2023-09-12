@@ -1,0 +1,25 @@
+version: '3'
+services:
+  app_container:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    container_name: 'hw17-docker-app'
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://root:prisma@localhost:27017
+      - SPRING_DATA_MONGODB_DATABASE=book
+      - SPRING_DATA_MONGODB_AUTHENTICATION-DATABASE=admin
+    depends_on:
+      - mongodb_container
+
+  mongodb_container:
+    image: prismagraphql/mongo-single-replica:4.4.3-bionic
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: prisma
+      INIT_WAIT_SEC: 3
+    ports:
+      - 27017:27017
+
