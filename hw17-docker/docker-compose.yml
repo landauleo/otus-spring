@@ -10,8 +10,6 @@ services:
       DE_FLAPDOODLE_MONGODB_EMBEDDED_VERSION: 4.0.2
     ports:
       - "27017:27017"
-    networks:
-      - nw
 
   app_container:
     restart: on-failure
@@ -24,11 +22,4 @@ services:
     depends_on:
       - mongodb_container
     environment: #overrides the same properties from application.yml
-      SPRING_DATA_MONGODB_URI: mongodb://root:prisma@mongodb_container:27017 #PAY ATTENTION TO THE HOST!! https://stackoverflow.com/questions/44189994/cant-acces-mongo-from-inside-docker
-      SPRING_DATA_MONGODB_DATABASE: book
-      SPRING_DATA_MONGODB_AUTHENTICATION-DATABASE: admin
-    networks:
-      - nw
-networks:
-  nw:
-    driver: bridge
+      SPRING_DATA_MONGODB_URI: mongodb://root:prisma@mongodb_container:27017 #PAY ATTENTION TO THE HOST!! https://stackoverflow.com/questions/44189994/cant-acces-mongo-from-inside-docker and https://docs.docker.com/compose/networking/
