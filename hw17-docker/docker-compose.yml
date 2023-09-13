@@ -1,25 +1,34 @@
-version: '3'
+version: '3.7'
 services:
+  mongodb_container:
+    # This image automatically creates a replica set required for transactions
+    image: prismagraphql/mongo-single-replica:4.4.3-bionic
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: prisma
+      INIT_WAIT_SEC: 3
+      DE_FLAPDOODLE_MONGODB_EMBEDDED_VERSION: 4.0.2
+    ports:
+      - "27017:27017"
+    networks:
+      - nw
+
   app_container:
+    restart: on-failure
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
     container_name: 'hw17-docker-app'
-    environment:
-      - SPRING_DATA_MONGODB_URI=mongodb://root:prisma@localhost:27017
-      - SPRING_DATA_MONGODB_DATABASE=book
-      - SPRING_DATA_MONGODB_AUTHENTICATION-DATABASE=admin
     depends_on:
       - mongodb_container
-
-  mongodb_container:
-    image: prismagraphql/mongo-single-replica:4.4.3-bionic
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: prisma
-      INIT_WAIT_SEC: 3
-    ports:
-      - 27017:27017
-
+    environment: #overrides the same properties from application.yml
+      SPRING_DATA_MONGODB_URI: mongodb://root:prisma@mongodb_container:27017 #PAY ATTENTION TO THE HOST!! https://stackoverflow.com/questions/44189994/cant-acces-mongo-from-inside-docker
+      SPRING_DATA_MONGODB_DATABASE: book
+      SPRING_DATA_MONGODB_AUTHENTICATION-DATABASE: admin
+    networks:
+      - nw
+networks:
+  nw:
+    driver: bridge

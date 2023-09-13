@@ -19,11 +19,8 @@
 ####Used commands:
 Пререквизиты -> создание executable файла:
 
-    mvn clean && mvn install
-Запускаем docker compose
-
-    docker compose up
+    mvn clean && mvn install && docker compose up
 
 Проверка
 
-    curl --location 'http://localhost:8000/health'
+    curl --location 'http://localhost:8080/actuator/health'
