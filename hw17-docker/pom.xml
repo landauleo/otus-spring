@@ -73,6 +73,7 @@
     </dependencies>
 
     <build>
+        <finalName>hw17-docker</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

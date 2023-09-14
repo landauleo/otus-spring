@@ -9,4 +9,4 @@ RUN groupadd -r myuser && \
 
 USER myuser
 
-ENTRYPOINT ["java", "-jar", "/hw17-docker-3.0.4.jar"]
+ENTRYPOINT ["java", "-jar", "/hw17-docker.jar"]
