@@ -5,3 +5,4 @@ resilience4j.circuitbreaker:
   instances:
     circuitBreakerService:
       minimum-number-of-calls: 3
+

@@ -15,3 +15,6 @@ Content-Type: application/json
   "author": "Stieg Larsson"
 }
 
+###
+DELETE http://localhost:8080/api/book/123
+Content-Type: application/json
