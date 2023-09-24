@@ -1,0 +1,17 @@
+###
+GET http://localhost:8080/api/book
+Accept: */*
+Content-Type: application/json
+Cache-Control: no-cache
+
+###
+POST http://localhost:8080/api/book
+Content-Type: application/json
+
+{
+  "id": null,
+  "name": "jjjjj",
+  "genre": "poem",
+  "author": "Stieg Larsson"
+}
+
