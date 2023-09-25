@@ -11,7 +11,6 @@ import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.otus.spring.rest.BookClient;
 import ru.otus.spring.rest.BookDto;
 
 @Slf4j
@@ -27,7 +26,7 @@ public class BookService {
                        CircuitBreakerConfig circuitBreakerConfig) {
         this.bookClient = bookClient;
         this.circuitBreaker = CircuitBreakerRegistry.of(circuitBreakerConfig)
-                .circuitBreaker("CircuitBreakerService");
+                .circuitBreaker("circuitBreakerService");
     }
 
     public List<BookDto> getAllBooks() {

@@ -1,7 +1,3 @@
 spring:
   application:
     name: client-app
-resilience4j.circuitbreaker:
-  instances:
-    circuitBreakerService:
-      minimum-number-of-calls: 3

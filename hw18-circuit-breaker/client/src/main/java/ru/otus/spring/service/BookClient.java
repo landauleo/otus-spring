@@ -1,4 +1,4 @@
-package ru.otus.spring.rest;
+package ru.otus.spring.service;
 
 import java.util.List;
 
@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import ru.otus.spring.rest.BookDto;
 
 @FeignClient(name = "book", url = "localhost:8666/")
 public interface BookClient {
