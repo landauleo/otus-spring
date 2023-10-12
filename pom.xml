@@ -33,6 +33,8 @@
         <module>hw15-integration</module>
         <module>hw16-actuator</module>
         <module>hw17-docker</module>
+        <module>hw18-circuit-breaker/client</module>
+        <module>hw18-circuit-breaker/server</module>
     </modules>
 
 </project>
